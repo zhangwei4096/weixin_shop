@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Admin extends Model
 {
     //
-    protected $table = 'weixin_admin';
-    public $timestamps  = false;
+    protected $table      = 'weixin_admin';
+    public $timestamps    = false;
+    protected $primaryKey = 'id';
 
 
 }

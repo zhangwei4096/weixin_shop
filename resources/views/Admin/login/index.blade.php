@@ -54,7 +54,9 @@
         </form>
     </div>
 </div>
-<div class="footer">Copyright {{$title}} by <a href="www.veimx.com" style="color:#ff4814;">巴蜀风博客技术支持</a> v{{$version}}</div>
+<div class="footer">Copyright {{$title}} by 
+	<a href="http://www.veimx.com" target="_blank"  style="color:#ff4814;">巴蜀风博客技术支持</a>
+	 v{{$version}}</div>
 
 <script type="text/javascript" src="{{ URL::asset('admin/lib/jquery/1.9.1/jquery.min.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('admin/static/h-ui/js/H-ui.js') }}"></script>
@@ -77,12 +79,12 @@
             layer.msg('验证码不能为空');
             return false;
          }
-         $.post('{{ url('admin/posts') }}',{_token:_token,username:username,pwd:pwd,code:code},function(result){
+         $.post('{{ url('admin/login/posts') }}',{_token:_token,username:username,pwd:pwd,code:code},function(result){
                 if (result.msg == 'error'){
                     layer.msg(result.data);
                 }else if (result.msg == 'success'){
                     layer.msg(result.data,function(){
-                        location.href='{{ url('admin/code') }}';
+                        location.href='{{ url('admin/index') }}';
                     });
 
                 }

@@ -19,9 +19,18 @@ Route::get('/', function () {
 Route::get('admin/login','Admin\LoginController@index');
 Route::get('admin/code','Admin\LoginController@code');
 //Route::get('admin/getcode','Admin\LoginController@getcode');
-Route::post('admin/posts','Admin\LoginController@posts'); //后台登陆验证
+Route::post('admin/login/posts','Admin\LoginController@posts'); //后台登陆验证
 
 Route::group(['middleware'=>['admin.login']],function(){
 //添加验证
-    Route::get('admin/index','Admin\IndexController@index');
+    Route::get('admin/index','Admin\IndexController@index'); //后台首页
+    Route::post('admin/posts','Admin\IndexController@posts'); //管理员密码修改
+    Route::get('admin/out','Admin\IndexController@out'); //退出登录
+
+    //产品管理
+    Route::get('admin/product/list','Admin\ProductController@index'); //产品展示首页
+    Route::get('admin/product/add','Admin\ProductController@add'); //添加产品
+
+
+    Route::post('admin/file/upload','Admin\ProductController@upload');
 });

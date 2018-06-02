@@ -50,7 +50,8 @@
                     <li>超级管理员</li>
                     <li class="dropDown dropDown_hover"> <a href="#" class="dropDown_A">{{ session('username') }}<i class="Hui-iconfont">&#xe6d5;</i></a>
                         <ul class="dropDown-menu menu radius box-shadow">
-                            <li><a href="#">切换账户</a></li>
+                            <li><a href="#" onclick="editPassword( {{ session('id') }} )">密码修改</a></li>
+                            <li><a href="#" onclick="switchs()">切换账户</a></li>
                             <li><a href="#" onclick="out();">退出</a></li>
                         </ul>
                     </li>
@@ -85,10 +86,81 @@
 
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript">
+    function editPassword (id){
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['500px', '260px'], //宽高
+            title: '密码修改',
+            content: '<div id="" class="layui-layer-content"> <article class="cl pd-20">\n' +
+            '\t<form action="/" method="post" class="form form-horizontal" id="form-change-password">\n' +
+            '\t\t<div class="row cl">\n' +
+            '\t\t\t<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>账户：</label>\n' +
+            '\t\t\t<div class="formControls col-xs-8 col-sm-9">{{ session('username') }}</div>\n' +
+            '\t\t</div>\n' +
+            '\t\t<div class="row cl">\n' +
+            '\t\t\t<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>新密码：</label>\n' +
+            '\t\t\t<div class="formControls col-xs-8 col-sm-9">\n' +
+            '\t\t\t\t<input type="password" name="pass1" class="input-text" autocomplete="off" placeholder="不修改请留空" name="newpassword" id="newpassword">\n' +
+            '\t\t\t</div>\n' +
+            '\t\t</div>\n' +
+            '\t\t<div class="row cl">\n' +
+            '\t\t\t<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>确认密码：</label>\n' +
+            '\t\t\t<div class="formControls col-xs-8 col-sm-9">\n' +
+            '\t\t\t\t<input type="password" name="pass2" class="input-text" autocomplete="off" placeholder="不修改请留空" name="newpassword2" id="new-password2">\n' +
+            '\t\t\t</div>\n' +
+            '\t\t</div>\n' +
+            '\t\t<div class="row cl">\n' +
+            '\t\t\t<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">{{ csrf_field() }}\n \n' +
+            '\t\t\t\t<input class="btn btn-primary radius" type="button" onclick="newPass();" value="&nbsp;&nbsp;保存&nbsp;&nbsp;">\n' +
+            '\t\t\t</div>\n' +
+            '\t\t</div>\n' +
+            '\t</form>\n' +
+            '</article>\n  </div>'
+        });
+    }
+    
+    function newPass (){
+       var pass1 = $('input[name=pass1]').val();
+       var pass2 = $('input[name=pass2]').val();
+       var _token= $('input[name=_token]').val();
+       var id    = {{ session('id') }}
+       if (pass1 == '' || pass1 == null){
+           layer.msg('密码不能为空');
+           return false;
+       }
+       if (pass1 != pass2){
+           layer.msg('两次密码不一致');
+           return false;
+       }
+       
+       $.post('{{ url('admin/posts') }}',{id:id,pass1:pass1,_token:_token},function(result){
+                if(result.msg=='success'){
+                    layer.msg(result.data,function(){
+                        layer.closeAll('page');
+                    });
+                }
+       });
+    }
 
+    function out(){
+        //退出
+        layer.confirm('您确定要退出登录？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            location.href='{{ url('admin/out') }}';
+        }, function(){
+
+        });
+    }
+
+    function switchs(){
+        //用户切换
+        location.href='{{ url('admin/login') }}';
+    }
+    
 </script>
+@yield('javascript');
 <!--/请在上方写此页面业务相关的脚本-->
-
-
 </body>
 </html>
