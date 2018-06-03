@@ -217,7 +217,7 @@
                 var info     = $('textarea[name=info]').val();
                 var thumb	= $('input[name=thumb]').val();
                 var content = ue.getContent();;
-                
+                var _token  = $('input[name=_token]').val();
                 if (title == null || title =="") {
                 	 layer.msg('标题不能为空');
                 	 return false;
@@ -268,7 +268,17 @@
                 	 return false;
                 }
 
+                $.post('{{ url('admin/product/posts') }}',{_token:_token,title:title,chandi:chandi,jjdw:jjdw,
+                zl:zl,xs_price:xs_price,sc_price:sc_price,cb_price:cb_price,start_time:start_time,end_time:end_time,
+                info:info,thumb:thumb,content:content},function(result){
+                        if(result.msg=='success'){
+                            layer.msg(result.data,function(){
+                                var index=parent.layer.getFrameIndex(window.name);
 
+                                parent.layer.close(index);
+                            });
+                        }
+                });
 
                 
             }

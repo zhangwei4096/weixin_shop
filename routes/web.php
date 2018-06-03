@@ -29,8 +29,8 @@ Route::group(['middleware'=>['admin.login']],function(){
 
     //产品管理
     Route::get('admin/product/list','Admin\ProductController@index'); //产品展示首页
-    Route::get('admin/product/add','Admin\ProductController@add'); //添加产品
+    Route::get('admin/product/add','Admin\ProductController@add'); //添加产品页面
+    Route::post('admin/product/posts','Admin\ProductController@posts');//添加产品业务逻辑
 
-
-    Route::post('admin/file/upload','Admin\ProductController@upload');
+    Route::post('admin/file/upload','Admin\ProductController@upload'); //缩略图上传
 });

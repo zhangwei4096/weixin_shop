@@ -22,7 +22,7 @@
             <dt><i class="Hui-iconfont">&#xe620;</i> 产品管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
-                    <li><a href="product-category.html" title="分类管理">产品添加</a></li>
+                    {{--<li><a href="{{ url('admin/product/add') }}" title="分类管理">产品添加</a></li>--}}
                     <li><a href="{{ url('admin/product/list') }}" title="产品管理">产品列表</a></li>
                 </ul>
             </dd>
