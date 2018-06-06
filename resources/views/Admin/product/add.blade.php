@@ -44,7 +44,6 @@
             <label class="form-label col-xs-4 col-sm-2">价格计算单位：</label>
             <div class="formControls col-xs-8 col-sm-9"> <span class="select-box">
 				<select class="select"name="jjdw" >
-					<option>请选择</option>
 					<option value="件">件</option>
 					<option value="斤">斤</option>
 					<option value="KG">KG</option>

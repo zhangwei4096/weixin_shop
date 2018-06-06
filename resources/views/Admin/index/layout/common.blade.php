@@ -14,6 +14,7 @@
     <script type="text/javascript" src="{{ URL::asset('admin/lib/respond.min.js') }}"></script>
     <![endif]-->
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('admin/static/h-ui/css/H-ui.min.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('layui/css/layui.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('admin/static/h-ui.admin/css/H-ui.admin.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('admin/lib/Hui-iconfont/1.0.8/iconfont.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('admin/static/h-ui.admin/skin/default/skin.css') }}" id="skin" />
