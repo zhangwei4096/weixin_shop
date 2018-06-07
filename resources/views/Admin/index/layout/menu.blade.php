@@ -2,15 +2,7 @@
 <aside class="Hui-aside">
 
     <div class="menu_dropdown bk_2">
-       {{-- <dl id="menu-article">
-            <dt><i class="Hui-iconfont">&#xe616;</i> 资讯管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-            <dd>
-                <ul>
-                    <li><a href="article-list.html" title="资讯管理">资讯管理</a></li>
-                </ul>
-            </dd>
-        </dl>
-        <dl id="menu-picture">
+        {{-- <dl id="menu-picture">
             <dt><i class="Hui-iconfont">&#xe613;</i> 图片管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
@@ -24,6 +16,14 @@
                 <ul>
                     {{--<li><a href="{{ url('admin/product/add') }}" title="分类管理">产品添加</a></li>--}}
                     <li><a href="{{ url('admin/product/list') }}" title="产品管理">产品列表</a></li>
+                </ul>
+            </dd>
+        </dl>
+        <dl id="menu-article">
+            <dt><i class="Hui-iconfont">&#xe616;</i> 商铺管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a href="{{url('admin/shop/index')}}" title="商铺列表">商铺列表</a></li>
                 </ul>
             </dd>
         </dl>

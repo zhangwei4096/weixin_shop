@@ -1,6 +1,11 @@
 {{--产品展示页面--}}
 @extends('Admin.index.layout.common');
 @section('content')
+    <style>
+        .layui-table-cell {
+            height: 100%!important;
+        }
+    </style>
     <section class="Hui-article-box">
         <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 产品管理 <span class="c-gray en">&gt;</span> 产品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
         <div class="Hui-article">
@@ -57,7 +62,7 @@
                     ,{field:'id', width:50, title: 'ID', sort: true}
                     ,{field:'title', width:200, title: '标题'}
                     ,{field:'thumb', width:180, title: '缩略图' ,templet: function(d){
-                            return '<img src="'+d.thumb+'" />'
+                            return '<img src="'+d.thumb+'" width="100" height="100" />'
                         } ,align:'center'}
                     ,{field:'xs_price', width:120, title: '销售价格' , sort: true}
                     ,{field:'cb_price', title: '成本价格', width: 120 , sort: true}
