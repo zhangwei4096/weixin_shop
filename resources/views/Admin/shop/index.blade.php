@@ -1,5 +1,5 @@
 {{--商铺展示页面--}}
-@extends('Admin.index.layout.common');
+@extends('Admin.index.layout.common')
 @section('content')
     <style>
         .layui-table-cell {

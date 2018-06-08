@@ -125,7 +125,7 @@
        var pass1 = $('input[name=pass1]').val();
        var pass2 = $('input[name=pass2]').val();
        var _token= $('input[name=_token]').val();
-       var id    = {{ session('id') }}
+       var id    = {{ session('id') }};
        if (pass1 == '' || pass1 == null){
            layer.msg('密码不能为空');
            return false;

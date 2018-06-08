@@ -71,11 +71,11 @@ class ShopController extends Controller
     public function scerweima(Request $request){
 
         $errorCorrectionLevel = 'L';    //容错级别
-        $matrixPointSize = 5;           //生成图片大小
+        $matrixPointSize = 15;           //生成图片大小
 
         //生成二维码图片
         $path     = public_path('upload/images/').date('Ymd');
-        if (!$path){
+        if (!is_dir($path)){
             mkdir($path);
         }
         $filename =  $path.'/'.time().'.png';
