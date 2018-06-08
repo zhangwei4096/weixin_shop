@@ -5,8 +5,9 @@
         <div class="Hui-article">
             <article class="cl pd-20">
                 <form action="" method="post" class="form form-horizontal" id="form-article-add">
+                    @csrf
                     <div id="tab-system" class="HuiTab">
-                        <div class="tabBar cl"><span>基本设置</span><span>安全设置</span><span>邮件设置</span><span>其他设置</span></div>
+                        <div class="tabBar cl"><span>基本设置</span><span>安全设置</span><span>邮件设置</span><span onclick="getWx();">微信设置</span></div>
                         <div class="tabCon">
                             <div class="row cl">
                                 <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>网站名称：</label>
@@ -109,14 +110,30 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tabCon"> </div>
-                    </div>
-                    <div class="row cl">
-                        <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
-                            <button onClick="article_save_submit();" class="btn btn-primary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存</button>
-                            <button onClick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+                        {{--微信设置--}}
+                        <div class="tabCon">
+                            <div class="row cl">
+                                <label class="form-label col-xs-4 col-sm-2">开发者ID(AppID)：</label>
+                                <div class="formControls col-xs-8 col-sm-9">
+                                    <input type="text" id="AppID" value="" class="input-text">
+                                </div>
+                            </div>
+                            <div class="row cl">
+                                <label class="form-label col-xs-4 col-sm-2">AppSecret：</label>
+                                <div class="formControls col-xs-8 col-sm-9">
+                                    <input type="text" id="AppSecret" value="" class="input-text">
+                                </div>
+                            </div>
+                            <div class="row cl">
+                                <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                                    <button onClick="weixin();" class="btn btn-primary radius" type="button"><i class="Hui-iconfont">&#xe632;</i> 保存</button>
+                                    <button onClick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+                                </div>
+                            </div>
                         </div>
+                        {{--微信设置--}}
                     </div>
+
                 </form>
             </article>
         </div>
@@ -137,9 +154,43 @@
             });
 
             $("#tab-system").Huitab({
+                //tabEvent:"mousemove",
                 index:0
             });
+
         });
+
+        var _token = $('input[name=_token]').val();
+
+        function weixin(){
+            //保存微信的设置
+            var AppID     = $("#AppID").val();
+            var AppSecret = $("#AppSecret").val();
+
+            if (AppID==null || AppID==""){
+                layer.msg('AppID不能为空');
+            }
+            if(AppSecret==null || AppSecret==""){
+                layer.msg('AppSecret不能为空');
+            }
+
+            $.post('{{url('admin/sys/save/3')}}',{_token:_token,AppSecret:AppSecret,AppID:AppID},function(result){
+                if (result.msg =='success'){
+                    layer.msg(result.data);
+                    location.reload();
+                }
+            });
+        }
+
+        function getWx(){
+            $.post('{{url('admin/sys/get/3')}}',{_token:_token},function(result){
+                if (result){
+                    var data = eval('(' +result+ ')');  //吧JSON字符串转换为JSON对象
+                    $("#AppID").attr("value",data.AppID);
+                    $("#AppSecret").attr("value",data.AppSecret);
+                }
+            });
+        }
     </script>
 
 @endsection
