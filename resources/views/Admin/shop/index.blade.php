@@ -25,6 +25,7 @@
                     <table class="layui-hide" id="list" lay-filter="demo"></table>
                     <script type="text/html" id="barDemo">
                         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="send">生成二维码</a>
+                        {{--<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="down">下载二维码</a>--}}
                         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
                         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
                     </script>
@@ -66,7 +67,7 @@
                             if (d.thumb == null){
                                 return '请生成二维码'
                             }else{
-                                return '<div><img src="'+d.thumb+'"  height="45" width="45"/></div>'
+                                return '<div><a href="'+d.thumb+'" title="二维码下载" download="'+d.id+'.png"><img  src="'+d.thumb+'"  height="45" width="45"/></a></div>'
                             }
                         } ,align:'center'}
                     ,{fixed: 'right',  title: '操作', align:'center', toolbar: '#barDemo'}
@@ -133,12 +134,12 @@
                 }else if(obj.event === 'send'){
                     //生成二维码
                     var url = id;
-                    $.post('{{url('admin/shop/scerweima')}}',{_token:_token,id:id,url:'www.baidu.com'},function(result){
+                    $.post('{{url('admin/shop/scerweima')}}',{_token:_token,id:id,url:'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxeba0c3cbc3992a59&redirect_uri=https%3A%2F%2Fwww.veimx.com&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect'},function(result){
                         if (result.msg == 'success'){
                             //有个BUG
                             layer.msg(result.data);
                             obj.update({
-                                thumb: '<div><img src="'+result.url+'" width="45" height="45" /></div>'
+                                thumb: '<div><a href="'+result.url+'" title="二维码下载" download="'+id+'.png"><img src="'+result.url+'" width="45" height="45" /></a></div>',
                             });
                         }
                     });

@@ -69,7 +69,7 @@ class ShopController extends Controller
     }
 
     public function scerweima(Request $request){
-
+        //二维码的生成
         $errorCorrectionLevel = 'L';    //容错级别
         $matrixPointSize = 15;           //生成图片大小
 

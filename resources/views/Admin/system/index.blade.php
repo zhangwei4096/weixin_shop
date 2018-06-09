@@ -177,7 +177,7 @@
             $.post('{{url('admin/sys/save/3')}}',{_token:_token,AppSecret:AppSecret,AppID:AppID},function(result){
                 if (result.msg =='success'){
                     layer.msg(result.data);
-                    location.reload();
+                    //location.reload();
                 }
             });
         }

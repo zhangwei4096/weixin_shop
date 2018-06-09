@@ -50,7 +50,7 @@
                 </ul>
             </dd>
         </dl>
-        <dl id="menu-admin">
+        {{--<dl id="menu-admin">
             <dt><i class="Hui-iconfont">&#xe62d;</i> 管理员管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
@@ -60,7 +60,7 @@
                 </ul>
             </dd>
         </dl>
-      {{--  <dl id="menu-tongji">
+       <dl id="menu-tongji">
             <dt><i class="Hui-iconfont">&#xe61a;</i> 系统统计<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
