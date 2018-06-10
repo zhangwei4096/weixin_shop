@@ -60,7 +60,7 @@
                 }
                 ,cols: [[
                     {type:'checkbox'}
-                    ,{field:'id', width:50, title: 'ID', sort: true}
+                    ,{field:'id', width:50, title: 'ID', sort: false}
                     ,{field:'name', width:400, title: '店铺名称'}
                     ,{field:'addr', width:400, title: '店铺地址' }
                     ,{field:'thumb', width:400,style:'height:50px;width:100%;line-height:48px!important;', title: '店铺二维码' ,templet: function(d){
@@ -134,7 +134,7 @@
                 }else if(obj.event === 'send'){
                     //生成二维码
                     var url = id;
-                    $.post('{{url('admin/shop/scerweima')}}',{_token:_token,id:id,url:'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxeba0c3cbc3992a59&redirect_uri=https%3A%2F%2Fwww.veimx.com&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect'},function(result){
+                    $.post('{{url('admin/shop/scerweima')}}',{_token:_token,id:id,url:'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxeba0c3cbc3992a59&redirect_uri=http%3A%2F%2Fwww.vimx.cn&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect'},function(result){
                         if (result.msg == 'success'){
                             //有个BUG
                             layer.msg(result.data);
