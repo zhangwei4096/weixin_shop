@@ -1,17 +1,15 @@
 <?php
-
 namespace App\Http\Controllers\Home;
 
-use App\Http\Model\System;
-use App\Http\Model\users;
-use Illuminate\Http\Request;
+use App\Http\Model\{System,users};
 use App\Http\Controllers\Controller;
 
 class GetController extends Controller
 {
     ///获取微信的基本信息
 
-    public function access_token($access_token_file='./access_json'){
+    public function access_token($access_token_file='./access_json'):string
+    {
         //获取基础access_token 。。。目前暂时用不着
         $info = System::find(3);
         $info = json_decode($info['data'],true);
@@ -22,10 +20,7 @@ class GetController extends Controller
         if (file_exists($access_token_file) && (time()-filemtime($access_token_file)<3600)){
             //文件存在并且没有超时
             $access_token = file_get_contents($access_token_file);
-            //return $access_token;
-
-            $url = 'http:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/bjyE8on7Qn9uTc1ibjKM8s2D19HYf9fPCWYRGiaK3yImtvNV8APfc0NgDaLzsrlhCSylrn1CdUd98RSwJjibDkGXg\/132';
-            echo stripslashes($url);
+            return $access_token;
 
         }else{
 
@@ -48,7 +43,8 @@ class GetController extends Controller
     //获取网页用户授权信息
 
 
-    public function get_webuser_info($code,$state){
+    public function get_webuser_info($code,$state):string
+    {
         //先拿到CODE 后 通过code换取网页授权access_token
         $AppSecret = 'd3e11e2904753c7a66567f6285ba528c';
         $AppID     = 'wxeba0c3cbc3992a59';
@@ -91,7 +87,8 @@ class GetController extends Controller
 
 
     //发送请求
-    public static function msg_get($url){
+    public static function msg_get(string $url):string
+    {
         //发送GET请求
 
         $ch = curl_init();
@@ -112,7 +109,8 @@ class GetController extends Controller
     }
 
 
-    public static function msg_post($url,$post_data){
+    public static function msg_post($url,$post_data):string
+    {
         //发送POST请求
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
