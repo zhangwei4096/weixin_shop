@@ -4,12 +4,10 @@ namespace App\Http\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model
+class Order extends Model
 {
-    //商品表
+    //订单模型
+    protected $table = 'weixin_order';
     protected $primaryKey = 'id';
-    protected $table      = 'weixin_product';
     public    $timestamps = false;
-
-
 }
