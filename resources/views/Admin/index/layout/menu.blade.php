@@ -2,7 +2,7 @@
 <aside class="Hui-aside">
 
     <div class="menu_dropdown bk_2">
-        {{-- <dl id="menu-picture">
+         {{--<dl id="menu-picture">
             <dt><i class="Hui-iconfont">&#xe613;</i> 图片管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
@@ -47,6 +47,14 @@
                     <li><a href="member-record-browse.html" title="浏览记录">浏览记录</a></li>
                     <li><a href="member-record-download.html" title="下载记录">下载记录</a></li>
                     <li><a href="member-record-share.html" title="分享记录">分享记录</a></li>--}}
+                </ul>
+            </dd>
+        </dl>
+        <dl id="menu-picture">
+            <dt><i class="Hui-iconfont">&#xe627;</i> 订单管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a href="{{ url('admin/order/index') }}" title="订单管理">订单列表</a></li>
                 </ul>
             </dd>
         </dl>

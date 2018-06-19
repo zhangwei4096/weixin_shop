@@ -89,7 +89,7 @@ class IndexController extends Controller
             $cart = Cart::find($v);
             $product[] = DB::table('weixin_product')->join('weixin_cart','weixin_product.id','=','weixin_cart.product_id')
                 ->where('weixin_product.id','=',$cart['product_id'])
-                ->select('weixin_product.title','weixin_product.xs_price','weixin_product.cb_price','weixin_cart.num','weixin_product.id')
+                ->select('weixin_product.title','weixin_product.thumb','weixin_product.xs_price','weixin_product.cb_price','weixin_cart.num','weixin_product.id')
                 ->get();
 
 
