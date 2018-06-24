@@ -15,7 +15,8 @@ class OrderController extends Controller
         $result = $request->post();
         $limit  = $result['limit'];
         $page   = ($result['page']-1)*$limit;;
-        $data   = DB::table('weixin_order')->select('id','order_id','order_price','order_data','order_time','order_type','end_time')
+        $data   = DB::table('weixin_order')
+            ->select('id','order_id','order_price','order_data','order_time','order_type','end_time','is_goods')
             ->offset($page)->limit($limit)->orderBy('id','desc')->get();
         $info   = [
             'code' => 0,
@@ -161,6 +162,5 @@ class OrderController extends Controller
     }
 
 
-    
 
 }

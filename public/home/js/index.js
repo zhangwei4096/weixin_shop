@@ -185,8 +185,9 @@ $('.sett').click(function(){
     });
     var vals = arr.join(","); //获取到需要提交订单的数据ID
 	var _token= $('input[name=_token]').val();
+	location.href=('/order/cid/'+vals);
 	//执行POST请求
-    $.ajax({
+    /*$.ajax({
         type:"POST",
         url:"/to_order",
         dataType:"json",
@@ -204,7 +205,7 @@ $('.sett').click(function(){
         error:function(){
             layer.msg('结算失败，请稍后再试！');
         }
-    })
+    });*/
 
 
 });
@@ -214,10 +215,11 @@ $('.delete').click(function(){
 	$.each($('li'), function() {
 		if ($(this).find("input[type=checkbox]").attr("checked")=="checked") {
             var id    =($(this).find("input[type=button]").attr('id'));  //获取需要删除的ID号
+
 			var _token=$('input[name=_token]').val();
             $.post('/del_cart',{cid:id,_token:_token},function(result){
 
-			});
+            });
             $(this).remove();
 
 		}

@@ -273,7 +273,6 @@
                         if(result.msg=='success'){
                             layer.msg(result.data,function(){
                                 var index=parent.layer.getFrameIndex(window.name);
-
                                 parent.layer.close(index);
                             });
                         }

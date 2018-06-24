@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Home;
 
+use App\Http\Model\Addrs;
 use App\Http\Model\Cart;
 use App\Http\Model\Order;
 use App\Http\Model\Product;
@@ -22,6 +23,17 @@ class IndexController extends Controller
         return view('Home.index.home',[
             'data' => $data
         ]); //首页
+    }
+
+    public function cart(){
+        //购物车 获取当前用户的购物车商品
+        $user_id  = users::where('openid',session('openid'))->value('id');
+        $data = DB::table('weixin_product')->join('weixin_cart','weixin_product.id','=','weixin_cart.product_id')->where('user_id',$user_id)
+            ->select('weixin_product.title','weixin_product.id as pid','weixin_product.thumb','weixin_product.xs_price','weixin_cart.num','weixin_cart.id as cid')->get();
+
+        return view('Home.index.cart',[
+            'data' => $data
+        ]);
     }
 
 
@@ -62,22 +74,12 @@ class IndexController extends Controller
 
     public function del_cart(Request $request){
         //删除购物车
+        $user_id = users::where('openid',session('openid'))->value('id');
         $cid = $request->post('cid'); //获取需要删除购物车的ID号
-        return self::msg(Cart::destroy($cid));
+        return self::msg(Cart::where([['user_id',$user_id],['product_id',$cid]])->delete());
     }
 
 
-    public function cart(){
-        //购物车 获取当前用户的购物车商品
-
-        $data = DB::table('weixin_product')->join('weixin_cart','weixin_product.id','=','weixin_cart.product_id')->where('user_id','5')
-            ->select('weixin_product.title','weixin_product.id as pid','weixin_product.thumb','weixin_product.xs_price','weixin_cart.num','weixin_cart.id as cid')->get();
-
-
-        return view('Home.index.cart',[
-            'data' => $data
-        ]);
-    }
 
 
     public function to_order(Request $request){
@@ -117,6 +119,7 @@ class IndexController extends Controller
                     'order_info' => json_encode($new_json),
                     'order_data' => $request->post('order_data'), //用户备注
                     'order_time' => date('Y-m-d H:i:s'),
+                    'addrs_id'   => $request->post('addrsid'),//订单收货地址
                     'order_price'=> $price //总价
 
                 ]);
@@ -131,9 +134,82 @@ class IndexController extends Controller
                 DB::rollBack(); //事务回滚
             }
 
-
-
     }
+
+    public function order(Request $request,$cid){
+        //填写订单页面
+        $addr_id  = users::where('openid',session('openid'))->value('addrs_id');
+        $user_id  = users::where('openid',session('openid'))->value('id');
+        $addrs    = Addrs::where([['id',$addr_id],['user_id',$user_id]])->get();
+        $data = DB::table('weixin_product')
+            ->join('weixin_cart','weixin_product.id','=','weixin_cart.product_id')
+            ->where('user_id',$user_id)
+            ->select('weixin_product.title','weixin_product.id as pid','weixin_product.thumb','weixin_product.xs_price','weixin_cart.num','weixin_cart.id as cid')
+            ->get();
+        $price = 0;
+        $cids = explode(',',$cid);
+        for ($i=0;$i<count($cids);$i++){
+            foreach ($data as $k => $v){
+
+                if ($v->cid == $cids[$i]){
+                    $datas[] = $v;
+                    $price  += $v->num*$v->xs_price;
+                }
+            }
+        }
+
+        if (is_null(@$datas)){
+            return '<h1>请勿非法操作</h1>';
+        }else{
+            return view('Home.index.order',[
+                'addrs' => $addrs[0],
+                'data'  => $datas,
+                'price' => $price,
+                'cid'   => $cid
+            ]);
+        }
+    }
+
+
+
+
+    public function add_addr(Request $request){
+        //添加地址
+        $user_id  = users::where('openid',session('openid'))->value('id');
+        $user_add = users::where('id',$user_id)->value('addrs_id');
+        $addrs    = explode(' ',$request->post('addrs'));
+        //1 首先查询当前用户是否有默认收货地址  没有就吧当前设置为默认收货地址
+
+        $addrs_id  = Addrs::insertGetId([
+            'province' => $addrs[0],
+            'city'     => $addrs[1],
+            'district' => $addrs[2],
+            'name'     => $request->post('name'),
+            'phone'    => $request->post('phone'),
+            'more'     => $request->post('more'),
+            'user_id'  => $user_id
+        ]);
+
+        if ($user_add == 0 ){
+            $user = users::find($user_id);
+            $user->addrs_id = $addrs_id;
+            return self::msg($user->save());
+        }else{
+            return self::msg($addrs_id);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     public static function msg($result){

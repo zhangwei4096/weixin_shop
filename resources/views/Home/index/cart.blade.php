@@ -15,87 +15,94 @@
 <body>
 <!--头部-->
 <header>
-    购物车<span class="fr">编辑</span>
+    <a href="javascript:;" style="float: left; color: #c2ccd1; font-size: 48px;font-weight: 400;" onclick="javascript:history.back(-1);"> < </a>购物车<span class="fr">编辑</span>
 </header>
 <!--头部-->
 <!--主题-->
 <div class="no">
     <p>暂无数据，快去逛逛吧！</p>
 </div>
-<div class="con">
-    <div class="content">
-        <div class="list">
-            <div class="fl">
-                <label>
-                    <input type="checkbox" checked="checked"/>
-                    <img src="{{ URL::asset('home/images/c_checkbox_on.png') }}"/>
-                </label>
-            </div>
-            <p>全选</p>
-        </div>
-        <ul ind="0" id="fruit">
-            @foreach($data as $v)
-            <li class="clearfix">
-                <div class="label fl">
+@if(count($data) == 0)
+    <div class="no">
+        <p>暂无数据，快去逛逛吧！</p>
+    </div>
+@else
+    <div class="con">
+        <div class="content">
+            <div class="list">
+                <div class="fl">
                     <label>
-                        <input type="checkbox" checked="checked" value="{{ $v->cid }}"/>
+                        <input type="checkbox" checked="checked"/>
                         <img src="{{ URL::asset('home/images/c_checkbox_on.png') }}"/>
                     </label>
                 </div>
-                <div class="img fl">
-                    <img src="{{ $v->thumb }}"/>
-                </div>
-                <div class="text fl">
-                    <p class="overflow">{{ $v->title }}</p>
-                    <p class="clearfix">
-                        <span class="fl red">￥{{ $v->xs_price }}</span>
-                        <span class="fr">
+                <p>全选</p>
+            </div>
+            <ul ind="0" id="fruit">
+                @foreach($data as $v)
+                    <li class="clearfix">
+                        <div class="label fl">
+                            <label>
+                                <input type="checkbox" checked="checked" value="{{ $v->cid }}"/>
+                                <img src="{{ URL::asset('home/images/c_checkbox_on.png') }}"/>
+                            </label>
+                        </div>
+                        <div class="img fl">
+                            <img src="{{ $v->thumb }}"/>
+                        </div>
+                        <div class="text fl">
+                            <p class="overflow">{{ $v->title }}</p>
+                            <p class="clearfix">
+                                <span class="fl red">￥{{ $v->xs_price }}</span>
+                                <span class="fr">
 		    					<input type="button" value="-" class="btn1" id="{{ $v->pid }}" />
 		    					<span class="number">{{ $v->num }}</span>
 		    					<input type="button" value="+"  class="btn2" id="{{ $v->pid }}" />
 		    				</span>
-                    </p>
-                </div>
-            </li>
-            @endforeach
-            @csrf
-        </ul>
-        <p class="total">一共<number></number>件商品：<span></span></p>
+                            </p>
+                        </div>
+                    </li>
+                @endforeach
+                @csrf
+            </ul>
+            <p class="total">一共<number></number>件商品：<span></span></p>
+        </div>
     </div>
-</div>
-<!--主题-->
-<!--结算-->
-<div class="bottom fixed">
-    <div class="fl bottom-label">
-        <label>
-            <input type="checkbox" checked="checked"/>
-            <img src="{{ URL::asset('home/images/c_checkbox_on.png') }}" class="fl" />
-            全选
-        </label>
+    <!--主题-->
+    <!--结算-->
+    <div class="bottom fixed">
+        <div class="fl bottom-label">
+            <label>
+                <input type="checkbox" checked="checked"/>
+                <img src="{{ URL::asset('home/images/c_checkbox_on.png') }}" class="fl" />
+                全选
+            </label>
+        </div>
+        <div class="fr">
+            需要支付：<span></span>
+            <button class="sett">结算</button>
+        </div>
     </div>
-    <div class="fr">
-        需要支付：<span></span>
-        <button class="sett">结算</button>
+    <!--结算-->
+    <!--删除-->
+    <div class="bottom fixed" style="display: none;">
+        <div class="fr">
+            <button class="delete">删除</button>
+        </div>
     </div>
-</div>
-<!--结算-->
-<!--删除-->
-<div class="bottom fixed" style="display: none;">
-    <div class="fr">
-        <button class="delete">删除</button>
+    <!--删除-->
+    <!--弹框-->
+    <div class="text1 fixed">
+        <form>
+            <input type="number"/>
+            <input type="button"  value="确定"/>
+        </form>
     </div>
-</div>
-<!--删除-->
-<!--弹框-->
-<div class="text1 fixed">
-    <form>
-        <input type="number"/>
-        <input type="button"  value="确定"/>
-    </form>
-</div>
+
 <!--弹框-->
 <!--弹框2-->
 <div class="alert fixed"></div>
+@endif
 <!--弹框2-->
 <script src="{{ URL::asset('home/js/web.js') }}"></script>
 <script src="{{ URL::asset('home/js/zepto.js') }}"></script>
