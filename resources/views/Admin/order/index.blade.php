@@ -61,11 +61,11 @@
                             ,{field:'order_price', width:120, title: '订单总价' , sort: true}
                             ,{field:'order_time', width:180, title: '下单时间', sort: true}
                             ,{field:'end_time', width:180, title: '支付时间',sort: true}
-                            ,{field:'order_type', width:180, title: '是否支付',templet:function(d){
+                            ,{field:'order_type', width:180, title: '是否支付' ,sort: true,templet:function(d){
                                     if (d.order_type == '0'){return '<p style="color: red;">未支付</p>'}
                                     else{ return '<p style="color: green;">支付成功</p>'}
                                 },align:'center'}
-                            ,{field:'is_goods', width:180, title: '是否发货',templet:function(d){
+                            ,{field:'is_goods', width:180, title: '是否发货' ,sort: true,templet:function(d){
                                     if (d.is_goods == '0'){return '<p style="color: red;">未发货</p>'}
                                     else{ return '<p style="color: green;">发货成功</p>'}
                                 },align:'center'}

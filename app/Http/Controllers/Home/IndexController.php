@@ -73,7 +73,7 @@ class IndexController extends Controller
     }
 
     public function del_cart(Request $request){
-        //删除购物车
+        //删除购物车的数据
         $user_id = users::where('openid',session('openid'))->value('id');
         $cid = $request->post('cid'); //获取需要删除购物车的ID号
         return self::msg(Cart::where([['user_id',$user_id],['product_id',$cid]])->delete());
@@ -89,7 +89,8 @@ class IndexController extends Controller
 
         foreach ($cid as &$v){
             $cart = Cart::find($v);
-            $product[] = DB::table('weixin_product')->join('weixin_cart','weixin_product.id','=','weixin_cart.product_id')
+            $product[] = DB::table('weixin_product')
+                ->join('weixin_cart','weixin_product.id','=','weixin_cart.product_id')
                 ->where('weixin_product.id','=',$cart['product_id'])
                 ->select('weixin_product.title','weixin_product.thumb','weixin_product.xs_price','weixin_product.cb_price','weixin_cart.num','weixin_product.id')
                 ->get();
@@ -110,6 +111,11 @@ class IndexController extends Controller
             $price   += $v->price; //总价
         }
 
+        //需要吧收货地址信息提取出来单独写入订单表中
+
+        $addrs_id = $request->post('addrsid'); //收货地址ID
+        $addrs    = Addrs::where([['id',$addrs_id],['user_id',$user_id]])->get()[0]; //订单地址信息
+
         //执行事务处理
         DB::beginTransaction();
             try{
@@ -119,7 +125,10 @@ class IndexController extends Controller
                     'order_info' => json_encode($new_json),
                     'order_data' => $request->post('order_data'), //用户备注
                     'order_time' => date('Y-m-d H:i:s'),
-                    'addrs_id'   => $request->post('addrsid'),//订单收货地址
+                    'addrs_id'   => $request->post('addrsid'),//订单收货地址ID
+                    'addrs_name' => $addrs->name,
+                    'addrs_phone'=> $addrs->phone,
+                    'addrs_info' => $addrs->province.$addrs->city.$addrs->district.','.$addrs->more,
                     'order_price'=> $price //总价
 
                 ]);
@@ -131,8 +140,9 @@ class IndexController extends Controller
                     return self::msg(1);
                 }
             } catch (\Exception $e){
-                DB::rollBack(); //事务回滚
+                DB::rollBack(); //回滚
             }
+
 
     }
 

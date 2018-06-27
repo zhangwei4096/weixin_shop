@@ -30,6 +30,7 @@ class OrderController extends Controller
     }
     public function info($id){
         $order = Order::find($id);
+
         $data  = json_decode($order->order_info,true);
         $html  = '
     <link rel="stylesheet" type="text/css" href="/admin/static/h-ui/css/H-ui.min.css" />
@@ -54,15 +55,40 @@ class OrderController extends Controller
             $html .='    </div>';
 	        $html .='</div>';
         }
-        $html .= '   <div class="page-container">
-    <form action="" method="post" class="form form-horizontal" id="form-article-add">';
-        $html .= '<div class="row cl">';
-        $html .= '<label class="form-label col-xs-4 col-sm-2">';
-        $html .= '<span class="c-red">*</span>总价：</label>';
-        $html .= '<div class="formControls col-xs-8 col-sm-9">';
-        $html .= '<input type="text" name="price"  value="'.$order->order_price.'" class="input-text">';
-        $html .= '</div>';
-        $html .= '</div>';
+            $html .= '   <div class="page-container">
+        <form action="" method="post" class="form form-horizontal" id="form-article-add">';
+            $html .= '<div class="row cl">';
+            $html .= '<label class="form-label col-xs-4 col-sm-2">';
+            $html .= '<span class="c-red">*</span>总价：</label>';
+            $html .= '<div class="formControls col-xs-8 col-sm-9">';
+            $html .= '<input type="text" name="price"  value="'.$order->order_price.'" class="input-text">';
+            $html .= '</div>';
+            $html .= '</div>';
+            /*
+             * 收货人 收货详细地址
+             * */
+            $html .= '<div class="row cl">';
+            $html .= '<label class="form-label col-xs-4 col-sm-2">';
+            $html .= '<span class="c-red">*</span>收货人：</label>';
+            $html .= '<div class="formControls col-xs-8 col-sm-9">';
+            $html .= '<input type="text" name="addrs_name"  value="'.$order->addrs_name.'" class="input-text">';
+            $html .= '</div>';
+            $html .= '</div>';
+            $html .= '<div class="row cl">';
+            $html .= '<label class="form-label col-xs-4 col-sm-2">';
+            $html .= '<span class="c-red">*</span>联系电话：</label>';
+            $html .= '<div class="formControls col-xs-8 col-sm-9">';
+            $html .= '<input type="text" name="addrs_phone"  value="'.$order->addrs_phone.'" class="input-text">';
+            $html .= '</div>';
+            $html .= '</div>';
+            $html .= '<div class="row cl">';
+            $html .= '<label class="form-label col-xs-4 col-sm-2">';
+            $html .= '<span class="c-red">*</span>详细地址：</label>';
+            $html .= '<div class="formControls col-xs-8 col-sm-9">';
+            $html .= '<input type="text" name="addrs_info"  value="'.$order->addrs_info.'" class="input-text">';
+            $html .= '</div>';
+            $html .= '</div>';
+
         if ($order->order_type == 1){
             $html .= '<div class="row cl">';
             $html .= '<label class="form-label col-xs-4 col-sm-2">';
@@ -96,6 +122,9 @@ class OrderController extends Controller
                     var price  = $("input[name=price]").val();
                     var express= $("input[name=express]").val();
                     var number = $("input[name=number]").val();
+                    var addrs_name = $("input[name=addrs_name]").val();
+                    var addrs_phone= $("input[name=addrs_phone]").val();
+                    var addrs_info = $("input[name=addrs_info]").val();
                     if (express == null || express == ""){
                         express = 0;
                     }
@@ -103,11 +132,13 @@ class OrderController extends Controller
                         number = 0;
                     }
                     
-                    $.post("/admin/order/edit",{id:id,_token:_token,price:price,number:number,express:express},function(result){
+                    $.post("/admin/order/edit",{id:id,_token:_token,price:price,
+                    number:number,express:express,addrs_name:addrs_name,addrs_phone:addrs_phone,addrs_info:addrs_info
+                    },function(result){
                         if (result.msg == "success"){
                             layer.msg(result.data,{icon: 1});
                         }else{
-                            layer.msg(result.data,{icon: 5});
+                            layer.msg("修改失败",{icon: 5});
                         }
                     });
                 }
@@ -123,15 +154,21 @@ class OrderController extends Controller
         //修改订单
         $id     = $request->post('id');
         $order  = Order::find($id);
+        $addrs_info = $request->post('addrs_info');
+        $addrs_name = $request->post('addrs_name');
+        $addrs_phone= $request->post('addrs_phone');
         if ($order->order_type == '0'){
             //订单状态为未支付 可能是修改价格
             $price = $request->post('price');
             $order->order_price = $price;
+            $order->addrs_info  = $addrs_info;
+            $order->addrs_name  = $addrs_name;
+            $order->addrs_phone = $addrs_phone;
             if ($order->save()){
                 return [
                     'msg' => 'success',
                     'code'=> 0,
-                    'data'=> '总价修改成功'
+                    'data'=> '修改成功'
                 ];
             }
         }else{
@@ -148,6 +185,9 @@ class OrderController extends Controller
                 $order->express = $express;  //快递公司
                 $order->number  = $number;  //快递单号
                 $order->is_goods= '1'; //是否发货
+                $order->addrs_info  = $addrs_info;
+                $order->addrs_name  = $addrs_name;
+                $order->addrs_phone = $addrs_phone;
                 if ($order->save()){
                     return [
                         'msg' => 'success',
