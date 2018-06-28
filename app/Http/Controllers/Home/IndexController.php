@@ -168,11 +168,14 @@ class IndexController extends Controller
             }
         }
 
+
+//        var_dump(count($addrs))  ;
+//        die();
         if (is_null(@$datas)){
             return '<h1>请勿非法操作</h1>';
         }else{
             return view('Home.index.order',[
-                'addrs' => $addrs[0],
+                'addrs' => $addrs,
                 'data'  => $datas,
                 'price' => $price,
                 'cid'   => $cid
@@ -210,9 +213,23 @@ class IndexController extends Controller
     }
 
 
+    public function select_addr(){
+        //选择收货地址
+        $user_id  = users::where('openid',session('openid'))->value('id');
+        //获取当前用户的收货地址
+        $addrs    = Addrs::where('user_id',$user_id)->get();
+
+        return view('Home.index.son.select',[
+            'addrs' => $addrs
+        ]);
+    }
 
 
-
+    public function del_addr(Request $request){
+        //删除地址
+        $id     = $request->post('id');
+        return self::msg(Addrs::destroy($id));
+    }
 
 
 

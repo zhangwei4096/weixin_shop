@@ -43,17 +43,19 @@
 </header>
 <div class="con">
     <div>
-        @if($addrs)
-        <div class="flex">
-           <p>
-               <strong>{{ $addrs->name }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $addrs->phone }}</strong>
-               <input type="hidden" name="addrsid" value="{{ $addrs->id }}" />
-           </p>
-           <p>
-               <i style="font-size: 18px;">{{ $addrs->province }}{{ $addrs->city }} {{ $addrs->district }} {{ $addrs->more }}</i>
-           </p>
-           <i style="font-family:'icomoon';color: #ff697a;position: absolute; top: 19px; right: 15px;">  </i>
-        </div>
+        @if(count($addrs) > 0)
+            @foreach($addrs as $v)
+                <div class="flex" style="cursor: pointer;" onclick="addr_add('选择收货地址','{{ url('/select/addr') }}')">
+                   <p>
+                       <strong>{{ $v->name }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $v->phone }}</strong>
+                       <input type="hidden" name="addrsid" value="{{ $v->id }}" />
+                   </p>
+                   <p>
+                       <i style="font-size: 18px;">{{ $v->province }}{{ $v->city }} {{ $v->district }} {{ $v->more }}</i>
+                   </p>
+                   <i style="font-family:'icomoon';color: #ff697a;position: absolute; top: 19px; right: 15px;">  </i>
+                </div>
+            @endforeach
         @else
         <div class="flex">
             <p style="color: red;text-align: center;"
@@ -63,20 +65,6 @@
         </div>
         @endif
         <ul ind="0">
-            {{--<li class="clearfix padding">
-                <div class="img fl">
-                    <img src="./images/1.jpg"/>
-                </div>
-                <div class="text fl">
-                    <p class="overflow">通过不透明度的变化通过不透明度的变化通过不透明度的变化</p>
-                    <p class="clearfix">
-                        <span class="fl red">￥119.1</span>
-                        <span class="fr red">
-                                <span>X 6 = ￥600 </span>
-                        </span>
-                    </p>
-                </div>
-            </li>--}}
             @foreach($data as $v)
                 <li class="clearfix padding">
                     <div class="img fl">
@@ -121,6 +109,8 @@
         });
         layer.full(index);
     }
+
+    
     function send(cid) {
         var _token = $('input[name=_token]').val();
         var addrsid= $('input[name=addrsid]').val();
