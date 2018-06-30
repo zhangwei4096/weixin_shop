@@ -114,6 +114,9 @@
     function send(cid) {
         var _token = $('input[name=_token]').val();
         var addrsid= $('input[name=addrsid]').val();
+        if (addrsid==null || addrsid == ''){
+            layer.msg('请选择收货地址谢谢！');
+        }
         $.ajax({
             type:"POST",
             url:"/to_order",

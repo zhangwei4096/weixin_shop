@@ -34,6 +34,7 @@
             padding: 10px 25px;
             background-color: #fff;
             position: relative;
+            cursor: pointer;
         }
         .box strong {
             color: #333;
@@ -45,41 +46,66 @@
             right: 5px;
 
         }
+        .bottoms {
+            /*浏览器定位*/
+            position: fixed;
+            bottom: 5px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
     @csrf
     @foreach($addrs as $v)
-    <ul class="box" id="addr{{ $v->id }}">
-        <li >
+    <ul class="box" id="addr{{ $v->id }}" >
+        <li>
             <strong>{{ $v->name }}</strong>
             <strong>{{ $v->phone }}</strong>
         </li>
         <li><p>{{ $v->province }}{{ $v->city }} {{ $v->district }} {{ $v->more }}</p></li>
         <li>
             <div class="layui-btn-group">
-                <button class="layui-btn layui-btn-primary layui-btn-sm" onclick="set_select({{ $v->id }});">选择地址</button>
-                <button class="layui-btn layui-btn-primary layui-btn-sm" onclick="set_default({{ $v->id }})">设为默认</button>
+                {{--<button class="layui-btn layui-btn-primary layui-btn-sm" onclick="set_select({{ $v->id }});"></button>--}}
+                <button class="layui-btn layui-btn-primary layui-btn-sm" onclick="set_default({{ $v->id }})">选择地址</button>
                 <button class="layui-btn layui-btn-primary layui-btn-sm" onclick="set_edit({{ $v->id }})"><i class="layui-icon"></i></button>
                 <button class="layui-btn layui-btn-primary layui-btn-sm" onclick="set_del({{ $v->id }})"><i class="layui-icon"></i></button>
             </div>
         </li>
     </ul>
     @endforeach
+    <button class="layui-btn layui-btn-fluid bottoms" onclick="addr_add('添加收货地址','{{ url('/add/addr') }}')">添加收货地址</button>
     <script>
         var _token = $('input[name=_token]').val(); //token
 
         function set_select(id) {
             //选择地址
-            $.post('',{},function (result) {
+            $.post('{{ url('/select/addr') }}',{},function (result) {
                 
             });
         }
         function set_default(id) {
             //设置默认收货地址
-            $.post('',{},function (result) {
-                
+            $.post('{{ url('/default/addr') }}',{_token:_token,id:id},function (result) {
+                if (result.msg == 'success'){
+                    layer.msg('地址选择成功',function(){//关闭弹出层
+                        var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                        parent.layer.close(index);
+                    });
+                }
             });
+        }
+        
+        function set_edit(id) {
+            //修改当前收货地址
+            var index = layer.open({
+                type: 2,
+                title:'地址信息修改',
+                content:'{{ url('/edit/addr') }}/'+id,
+                end:function(){
+                    location.reload();
+                }
+            });
+            layer.full(index);
         }
 
         function set_del(id) {
@@ -98,6 +124,18 @@
             }, function(){
 
             });
+        }
+        function addr_add(title,url){
+            //添加地址
+            var index = layer.open({
+                type: 2,
+                title:title,
+                content:url,
+                end:function(){
+                    location.reload();
+                }
+            });
+            layer.full(index);
         }
     </script>
 </body>

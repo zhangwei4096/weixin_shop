@@ -227,13 +227,37 @@ class IndexController extends Controller
 
     public function del_addr(Request $request){
         //删除地址
-        $id     = $request->post('id');
-        return self::msg(Addrs::destroy($id));
+        return self::msg(Addrs::destroy($request->post('id')));
     }
 
+    public function set_default(Request $request){
+        //设置为默认收货地址
+        $user_id  = self::get_user_id();
+        $user   = users::find($user_id);
+        $user->addrs_id = $request->post('id');
+        return self::msg($user->save());
+    }
 
+    public function edit_addr($id){
+        //修改收货地址展示页面
+        $addrs = Addrs::find($id);
+        return view('Home.index.son.edit',[
+            'addrs' => $addrs
+        ]);
+    }
 
-
+    public function update(Request $request){
+        //修改收货地址信息写入到数据库
+        $addrs = Addrs::find($request->post('id'));
+        $addr  = explode(' ',$request->post('addrs'));
+        $addrs->name = $request->post('name');  //收货人
+        $addrs->phone= $request->post('phone'); //收货电话
+        $addrs->more = $request->post('more'); //详细地址
+        $addrs->province = $addr[0];
+        $addrs->city     = $addr[1];
+        $addrs->district = $addr[2];
+        return self::msg($addrs->save());
+    }
 
 
 
@@ -253,4 +277,9 @@ class IndexController extends Controller
             ];
         }
     }
+
+    public static function get_user_id(){
+       return users::where('openid',session('openid'))->value('id');
+    }
+
 }
