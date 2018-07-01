@@ -62,7 +62,7 @@ class ProductController extends Controller
         $info   = [
             'code' => 0,
             'msg'  => '',
-            'count'=> count($data),
+            'count'=> count(Product::all()),
             'data' => $data
         ];
 

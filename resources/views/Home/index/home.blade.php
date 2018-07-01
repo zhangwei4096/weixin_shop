@@ -238,7 +238,7 @@
             <a href="#"><span style="font-family: 'icomoon';"></span><span>首页</span></a>
         </li>
         <li style="position:relative;">
-            <a href="#"><span style="font-family: 'icomoon';"></span><span>我的订单</span></a>
+            <a href="{{ url('/my/orders') }}"><span style="font-family: 'icomoon';"></span><span>我的订单</span></a>
         </li>
         <li>
             <a href="{{ url('/cart') }}"><span style="font-family: 'icomoon';"></span><span>购物车</span></a>

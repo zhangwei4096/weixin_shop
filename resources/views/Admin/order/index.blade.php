@@ -85,7 +85,7 @@
                             layer.msg('ID：'+ data.id + ' 的查看操作');
                         } else if(obj.event === 'del'){
                             layer.confirm('真的删除行么', function(index){
-                                $.post("{{url('admin/product/delete')}}",{_token:_token,id:id},function(result){
+                                $.post("{{url('admin/order/delete')}}",{_token:_token,id:id},function(result){
                                     if (result.msg == 'success'){
                                         layer.msg(result.data);
                                         obj.del();

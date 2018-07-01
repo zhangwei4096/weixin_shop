@@ -21,7 +21,7 @@ class OrderController extends Controller
         $info   = [
             'code' => 0,
             'msg'  => '',
-            'count'=> count($data),
+            'count'=> count(Order::all()),
             'data' => $data
         ];
 
@@ -198,6 +198,16 @@ class OrderController extends Controller
             }
 
 
+        }
+    }
+
+    public function delete(Request  $request){
+        if (Order::destroy($request->post('id'))){
+            return [
+                'msg' => 'success',
+                'code'=> 0,
+                'data'=> '删除成功'
+            ];
         }
     }
 

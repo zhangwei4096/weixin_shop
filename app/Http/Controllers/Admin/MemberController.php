@@ -26,7 +26,7 @@ class MemberController extends Controller
         $result = [
             'code' => 0,
             'msg'  => '',
-            'count'=> count($data),
+            'count'=> count(users::all()),
             'data' => $new
         ];
         return $result;

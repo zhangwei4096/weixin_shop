@@ -18,7 +18,7 @@ class IndexController extends Controller
         //获取所有商品信息
         session(['openid'=>'ouTkduJIVI_J5P7CTg8ucpdVhMlM']);
 
-        $data = DB::table('weixin_product')->orderBy('id','DESC')->get();
+        $data = DB::table('weixin_product')->where('type','1')->orderBy('id','DESC')->get();
 
         return view('Home.index.home',[
             'data' => $data
@@ -174,7 +174,7 @@ class IndexController extends Controller
         if (is_null(@$datas)){
             return '<h1>请勿非法操作</h1>';
         }else{
-            return view('Home.index.order',[
+            return view('Home.index.son.order',[
                 'addrs' => $addrs,
                 'data'  => $datas,
                 'price' => $price,

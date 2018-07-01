@@ -39,7 +39,7 @@ class ShopController extends Controller
         $info    =  [
             'code' => 0,
             'msg'  => '',
-            'count'=> count($data),
+            'count'=> count(Shop::all()),
             'data' => $data
         ];
         return $info;
