@@ -35,7 +35,7 @@
 
 
 <nav class="navbar text-center">
-    <button class="topleft" onclick ="javascript:history.go(-1);">
+    <button class="topleft" onclick ="javascript:location.href='{{ url('/') }}';">
         <span style="font-family: 'icomoon'; font-size: 26px;"></span>
     </button>
     <a class="navbar-tit center-block">订单中心</a>

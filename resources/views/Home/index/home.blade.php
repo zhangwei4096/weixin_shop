@@ -235,7 +235,7 @@
 <div class="nav">
     <ul>
         <li>
-            <a href="#"><span style="font-family: 'icomoon';"></span><span>首页</span></a>
+            <a href="{{ url('/') }}"><span style="font-family: 'icomoon';"></span><span>首页</span></a>
         </li>
         <li style="position:relative;">
             <a href="{{ url('/my/orders') }}"><span style="font-family: 'icomoon';"></span><span>我的订单</span></a>
@@ -244,7 +244,7 @@
             <a href="{{ url('/cart') }}"><span style="font-family: 'icomoon';"></span><span>购物车</span></a>
         </li>
         <li>
-            <a href=""><span style="font-family: 'icomoon';"></span><span>个人中心</span></a>
+            <a href="{{ url('/center') }}"><span style="font-family: 'icomoon';"></span><span>个人中心</span></a>
         </li>
     </ul>
 </div>
