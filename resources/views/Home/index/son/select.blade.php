@@ -66,7 +66,7 @@
         <li>
             <div class="layui-btn-group">
                 {{--<button class="layui-btn layui-btn-primary layui-btn-sm" onclick="set_select({{ $v->id }});"></button>--}}
-                <button class="layui-btn layui-btn-primary layui-btn-sm" onclick="set_default({{ $v->id }})">选择地址</button>
+                <button class="layui-btn layui-btn-primary layui-btn-sm" onclick="set_default({{ $v->id }})">设为默认</button>
                 <button class="layui-btn layui-btn-primary layui-btn-sm" onclick="set_edit({{ $v->id }})"><i class="layui-icon"></i></button>
                 <button class="layui-btn layui-btn-primary layui-btn-sm" onclick="set_del({{ $v->id }})"><i class="layui-icon"></i></button>
             </div>

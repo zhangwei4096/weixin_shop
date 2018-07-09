@@ -81,71 +81,6 @@ class IndexController extends Controller
 
 
 
-
-    public function to_order(Request $request){
-        //提交订单 事务处理 order_info 订单信息表 用JSON存储
-        $cid     = explode(',',$request->post('cid'));  //获取选中的商品
-        $user_id = users::where('openid',session('openid'))->value('id'); //用户ID
-
-        foreach ($cid as &$v){
-            $cart = Cart::find($v);
-            $product[] = DB::table('weixin_product')
-                ->join('weixin_cart','weixin_product.id','=','weixin_cart.product_id')
-                ->where('weixin_product.id','=',$cart['product_id'])
-                ->select('weixin_product.title','weixin_product.thumb','weixin_product.xs_price','weixin_product.cb_price','weixin_cart.num','weixin_product.id')
-                ->get();
-
-
-        }
-
-        //三维数组转二位数组
-
-        foreach ($product as $c => $n){
-            $new_json[] = $n[0];
-
-        }
-
-        $price = 0;
-        foreach ($new_json as &$v){  //JSON对象
-            $v->price = $v->num*$v->xs_price;
-            $price   += $v->price; //总价
-        }
-
-        //需要吧收货地址信息提取出来单独写入订单表中
-
-        $addrs_id = $request->post('addrsid'); //收货地址ID
-        $addrs    = Addrs::where([['id',$addrs_id],['user_id',$user_id]])->get()[0]; //订单地址信息
-
-        //执行事务处理
-        DB::beginTransaction();
-            try{
-                $one = DB::table('weixin_order')->insert([
-                    'user_id'    => $user_id,
-                    'order_id'   => 'Wx_'.time().mt_rand(1000,9999),
-                    'order_info' => json_encode($new_json),
-                    'order_data' => $request->post('order_data'), //用户备注
-                    'order_time' => date('Y-m-d H:i:s'),
-                    'addrs_id'   => $request->post('addrsid'),//订单收货地址ID
-                    'addrs_name' => $addrs->name,
-                    'addrs_phone'=> $addrs->phone,
-                    'addrs_info' => $addrs->province.$addrs->city.$addrs->district.','.$addrs->more,
-                    'order_price'=> $price //总价
-
-                ]);
-                foreach ($cid as &$v){
-                    $two = DB::table('weixin_cart')->where('id','=',$v)->delete();
-                }
-                if ($one&&$two){
-                    DB::commit();  //没有错误 提交事务
-                    return self::msg(1);
-                }
-            } catch (\Exception $e){
-                DB::rollBack(); //回滚
-            }
-
-
-    }
-
     public function order(Request $request,$cid){
         //填写订单页面
         $addr_id  = users::where('openid',session('openid'))->value('addrs_id');
@@ -261,14 +196,78 @@ class IndexController extends Controller
 
 
 
+    public function to_order(Request $request){
+        //提交订单 事务处理 order_info 订单信息表 用JSON存储
+        $cid     = explode(',',$request->post('cid'));  //获取选中的商品
+        $user_id = users::where('openid',session('openid'))->value('id'); //用户ID
+
+        foreach ($cid as &$v){
+            $cart = Cart::find($v);
+            $product[] = DB::table('weixin_product')
+                ->join('weixin_cart','weixin_product.id','=','weixin_cart.product_id')
+                ->where('weixin_product.id','=',$cart['product_id'])
+                ->select('weixin_product.title','weixin_product.thumb','weixin_product.xs_price','weixin_product.cb_price','weixin_cart.num','weixin_product.id')
+                ->get();
 
 
-    public static function msg($result){
+        }
+
+        //三维数组转二位数组
+
+        foreach ($product as $c => $n){
+            $new_json[] = $n[0];
+
+        }
+
+        $price = 0;
+        foreach ($new_json as &$v){  //JSON对象
+            $v->price = $v->num*$v->xs_price;
+            $price   += $v->price; //总价
+        }
+
+        //需要吧收货地址信息提取出来单独写入订单表中
+
+        $addrs_id = $request->post('addrsid'); //收货地址ID
+        $addrs    = Addrs::where([['id',$addrs_id],['user_id',$user_id]])->get()[0]; //订单地址信息
+        $order_id = 'Wx_'.time().mt_rand(1000,9999); //订单ID
+        //执行事务处理
+        DB::beginTransaction();
+        try{
+            $one = DB::table('weixin_order')->insert([
+                'user_id'    => $user_id,
+                'order_id'   => $order_id,
+                'order_info' => json_encode($new_json),
+                'order_data' => $request->post('order_data'), //用户备注
+                'order_time' => date('Y-m-d H:i:s'),
+                'addrs_id'   => $request->post('addrsid'),//订单收货地址ID
+                'addrs_name' => $addrs->name,
+                'addrs_phone'=> $addrs->phone,
+                'addrs_info' => $addrs->province.$addrs->city.$addrs->district.','.$addrs->more,
+                'order_price'=> $price //总价
+
+            ]);
+            foreach ($cid as &$v){
+                $two = DB::table('weixin_cart')->where('id','=',$v)->delete();
+            }
+            if ($one&&$two){
+                DB::commit();  //没有错误 提交事务
+                return self::msg(1,$order_id);
+            }
+        } catch (\Exception $e){
+            DB::rollBack(); //回滚
+        }
+
+
+    }
+
+
+    public static function msg($result,$order=0){
         //返回信息
         if ($result){
             return [
-                'msg' => 'success',
-                'cod' => 0
+                'msg'   => 'success',
+                'cod'   => 0,
+                'order' => $order
             ];
         }else{
             return [

@@ -127,7 +127,7 @@
             },
             success:function(result){
                 if (result.msg = 'success'){
-                    //执行页面跳转到订单页
+                    location.href='{{ url('/pay') }}/'+result.order; //支付页面
                 }else {
                     layer.msg('结算失败，请重试！');
                 }
