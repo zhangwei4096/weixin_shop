@@ -109,11 +109,17 @@ Route::group(['namespace'=>'Home'],function(){
     Route::get('/add/addr',function (){  //添加地址页面
         return view('Home.index.son.addr');
     });
-    Route::get('/select/addr','IndexController@select_addr');//选择收货地址
-    Route::post('/add/addr','IndexController@add_addr');//添加收货地址
+
     Route::post('/to_order','IndexController@to_order'); //提交订单
+    Route::get('/pay/{order}','PayController@pay'); //支付页面
+    Route::get('/pay_type/{order}/{type}','PayController@pay_type'); //订单支付类型
+
+    //订单异步通知 需要取消CSRF 验证
+    Route::post('/pay/alipay_verify','PayController@notify_url');  //订单异步通知
 
     //收货地址操作
+    Route::get('/select/addr','IndexController@select_addr');//选择收货地址
+    Route::post('/add/addr','IndexController@add_addr');//添加收货地址
     Route::post('/del/addr','IndexController@del_addr');
     Route::post('/default/addr','IndexController@set_default'); //设置为默认收货地址
     Route::get('/edit/addr/{id}','IndexController@edit_addr');  //修改收货地址
@@ -122,6 +128,9 @@ Route::group(['namespace'=>'Home'],function(){
     //我的订单中心操作
     Route::get('/my/orders','OrderController@index');  //订单中心首页
     Route::get('/my/orders/{id}','OrderController@more'); //订单详细页面
+
+    //我的个人中心
+    Route::get('/center','CenterController@index'); //个人中心首页
 });
 
 

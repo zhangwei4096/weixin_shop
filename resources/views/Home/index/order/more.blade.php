@@ -14,6 +14,7 @@
     <link rel="stylesheet" type="text/css" href="http://at.alicdn.com/t/font_1459473269_4751618.css">
     <link rel="stylesheet" href="{{ URL::asset('layui/css/layui.css') }}" />
     <script src="{{ URL::asset('home/js/jquery.js') }}"></script>
+    <script src="{{ URL::asset('layer/layer.js') }}"></script>
     <script src="{{ URL::asset('home/js/bootstrap.min.js') }}"></script>
 
     <!--必要样式-->
@@ -73,12 +74,25 @@
         <div class="dz noblord">{{ $order->express }}：{{ $order->number }}</div>
     </div>
     @elseif($order->order_type == 1 && $order->is_goods == 0)
-            <button class="layui-btn layui-btn-fluid bottomsl">提醒商家发货</button>
+            <button class="layui-btn layui-btn-fluid bottomsl" onclick="info();">提醒商家发货</button>
     @else
-            <button class="layui-btn layui-btn-fluid bottoms">去支付</button>{{--跳转到支付页面--}}
+            <button class="layui-btn layui-btn-fluid bottoms" onclick="go_pay();">去支付</button>{{--跳转到支付页面--}}
     @endif
 
 </div>
+<script>
 
+    function info(){
+        //提醒
+        layer.msg('提醒成功',{icon: 1});
+    }
+
+    function go_pay() {
+        //跳转到支付页面
+        var order = '{{ $order->order_id }}';
+        location.href='{{ url('/pay/') }}/'+order;
+    }
+
+</script>
 </body>
 </html>

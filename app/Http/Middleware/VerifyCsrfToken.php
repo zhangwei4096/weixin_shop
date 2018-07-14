@@ -13,5 +13,6 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         //
+        '/pay/alipay_verify'  //取消CSRF 认证 支付宝异步通知地址
     ];
 }
