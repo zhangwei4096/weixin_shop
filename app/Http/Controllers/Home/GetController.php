@@ -41,13 +41,12 @@ class GetController extends Controller
 
 
     //获取网页用户授权信息
-
-
     public function get_webuser_info($code,$state):string
     {
         //先拿到CODE 后 通过code换取网页授权access_token
-        $AppSecret = 'd3e11e2904753c7a66567f6285ba528c';
-        $AppID     = 'wxeba0c3cbc3992a59';
+        $info      = (json_decode(System::find(3)['data'],true));
+        $AppSecret = $info['AppSecret'];
+        $AppID     = $info['AppID'];
         $url       = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='.$AppID.'&secret='.$AppSecret.'&code='.$code.'&grant_type=authorization_code';
         $info      = json_decode(self::msg_get($url),true);  //获取openid
         //先查询数据库中是否有这个openID
@@ -84,6 +83,10 @@ class GetController extends Controller
 
 
     }
+
+
+
+
 
 
     //发送请求

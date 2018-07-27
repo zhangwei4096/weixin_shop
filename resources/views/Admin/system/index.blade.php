@@ -7,7 +7,14 @@
                 <form action="" method="post" class="form form-horizontal" id="form-article-add">
                     @csrf
                     <div id="tab-system" class="HuiTab">
-                        <div class="tabBar cl"><span>基本设置</span><span>安全设置</span><span>邮件设置</span><span onclick="getWx();">微信设置</span></div>
+                        <div class="tabBar cl">
+                            <span>基本设置</span>
+                            <span>安全设置</span>
+                            <span>邮件设置</span>
+                            <span onclick="getWx();">微信设置</span>
+                            <span onclick="getAlipay();">支付宝设置</span>
+                        </div>
+
                         <div class="tabCon">
                             <div class="row cl">
                                 <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>网站名称：</label>
@@ -132,6 +139,34 @@
                             </div>
                         </div>
                         {{--微信设置--}}
+                        {{--支付宝设置--}}
+                        <div class="tabCon">
+                            <div class="row cl">
+                                <label class="form-label col-xs-4 col-sm-2">开发者ID(app_id)：</label>
+                                <div class="formControls col-xs-8 col-sm-9">
+                                    <input type="text" id="app_id" value="" class="input-text">
+                                </div>
+                            </div>
+                            <div class="row cl">
+                                <label class="form-label col-xs-4 col-sm-2">商户私钥：</label>
+                                <div class="formControls col-xs-8 col-sm-9">
+                                    <input type="text" id="private_key" value="" class="input-text">
+                                </div>
+                            </div>
+                            <div class="row cl">
+                                <label class="form-label col-xs-4 col-sm-2">支付宝公钥：</label>
+                                <div class="formControls col-xs-8 col-sm-9">
+                                    <input type="text" id="public_key" value="" class="input-text">
+                                </div>
+                            </div>
+                            <div class="row cl">
+                                <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                                    <button onClick="alipay();" class="btn btn-primary radius" type="button"><i class="Hui-iconfont">&#xe632;</i> 保存</button>
+                                    <button onClick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+                                </div>
+                            </div>
+                        </div>
+                        {{--支付宝设置--}}
                     </div>
 
                 </form>
@@ -169,12 +204,41 @@
 
             if (AppID==null || AppID==""){
                 layer.msg('AppID不能为空');
+                return false;
             }
             if(AppSecret==null || AppSecret==""){
                 layer.msg('AppSecret不能为空');
+                return false;
             }
 
             $.post('{{url('admin/sys/save/3')}}',{_token:_token,AppSecret:AppSecret,AppID:AppID},function(result){
+                if (result.msg =='success'){
+                    layer.msg(result.data);
+                    //location.reload();
+                }
+            });
+        }
+
+        function alipay() {
+            //保存支付宝的配置
+            var app_id      = $("#app_id").val();
+            var public_key  = $("#public_key").val();
+            var private_key = $("#private_key").val();
+            if (app_id==null || app_id==""){
+                layer.msg('AppID不能为空');
+                return false;
+            }
+
+            if (public_key==null || public_key==""){
+                layer.msg('public_key不能为空');
+                return false;
+            }
+
+            if (private_key==null || private_key==""){
+                layer.msg('private_key不能为空');
+                return false;
+            }
+            $.post('{{url('admin/sys/save/4')}}',{_token:_token,app_id:app_id,public_key:public_key,private_key:private_key},function(result){
                 if (result.msg =='success'){
                     layer.msg(result.data);
                     //location.reload();
@@ -188,6 +252,17 @@
                     var data = eval('(' +result+ ')');  //吧JSON字符串转换为JSON对象
                     $("#AppID").attr("value",data.AppID);
                     $("#AppSecret").attr("value",data.AppSecret);
+                }
+            });
+        }
+
+        function getAlipay(){
+            $.post('{{url('admin/sys/get/4')}}',{_token:_token},function(result){
+                if (result){
+                    var data = eval('(' +result+ ')');  //吧JSON字符串转换为JSON对象
+                    $("#app_id").attr("value",data.app_id);
+                    $("#public_key").attr("value",data.public_key);
+                    $("#private_key").attr("value",data.private_key);
                 }
             });
         }

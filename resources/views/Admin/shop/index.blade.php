@@ -134,7 +134,7 @@
                 }else if(obj.event === 'send'){
                     //生成二维码
                     var url = id;
-                    $.post('{{url('admin/shop/scerweima')}}',{_token:_token,id:id,url:'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxeba0c3cbc3992a59&redirect_uri=http%3A%2F%2Fwww.vimx.cn&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect'},function(result){
+                    $.post('{{url('admin/shop/scerweima')}}',{_token:_token,id:id},function(result){
                         if (result.msg == 'success'){
                             //有个BUG
                             layer.msg(result.data);

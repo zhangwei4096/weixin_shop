@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Model\Product;
 use App\Http\Model\Shop;
+use App\Http\Model\System;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -79,7 +80,10 @@ class ShopController extends Controller
             mkdir($path);
         }
         $filename =  $path.'/'.time().'.png';
-        \QRcode::png($request->post('url'),$filename,$errorCorrectionLevel,$matrixPointSize,2);
+        $AppID =  (json_decode(System::find(3)['data'],true))['AppID'];
+        $url      = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='.$AppID.'&redirect_uri=http%3A%2F%2Fshop.veimx.com&response_type=code&scope=snsapi_userinfo&state='.$request->post('id').'#wechat_redirect';
+
+        \QRcode::png($url,$filename,$errorCorrectionLevel,$matrixPointSize,2);
         $QR = $filename;                //已经生成的原始二维码图片文件
 
 

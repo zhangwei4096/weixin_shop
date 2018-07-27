@@ -6,6 +6,8 @@
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>支付订单</title>
     <script type="text/javascript" src="{{ URL::asset('home/js/jquery.js') }}"></script>
+    <link rel="stylesheet" href="{{ URL::asset('layui/css/layui.css') }}" />
+    <script src="{{ URL::asset('layer/layer.js') }}"></script>
     <style type="text/css">
         html {
             font-size: 125%; /* 20梅16=125% min-font-size:12px bug*/
@@ -130,8 +132,39 @@
 </div>
 <!--内容 end-->
 
-
 <script type="text/javascript">
+    //调用微信JS api 支付
+    function jsApiCall()
+    {
+        WeixinJSBridge.invoke(
+            'getBrandWCPayRequest',
+                {!! $jsApiParameters !!},
+            function(res){
+                WeixinJSBridge.log(res.err_msg);
+                if (res.err_msg == "get_brand_wcpay_request:ok") {
+                    // message: "微信支付成功!",
+                    layer.msg('恭喜您支付成功',{icon:1,time:2000});
+                }else if (res.err_msg == "get_brand_wcpay_request:cancel") {
+                    // message: "已取消微信支付!"
+                }
+            }
+        );
+    }
+
+    function callpay()
+    {
+        if (typeof WeixinJSBridge == "undefined"){
+            if( document.addEventListener ){
+                document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+            }else if (document.attachEvent){
+                document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+                document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+            }
+        }else{
+            jsApiCall();
+        }
+    }
+
     function showHideCode(){
         $("#showdiv").toggle();
     }
@@ -140,7 +173,14 @@
         var order_id = '{{ $pay->order_id }}';
         var pay_type = $("input[name='pay_type']:checked").val();
         var _token   = $("input[name='_token']").val();
-        location.href= "{{ url('pay_type') }}/"+order_id+'/'+pay_type;
+        if (pay_type == 1){
+            //微信支付 直接在这个页面调出支付
+            callpay();
+        }else{
+            location.href= "{{ url('pay_type') }}/"+order_id+'/'+pay_type;
+        }
+
+
     }
 </script>
 

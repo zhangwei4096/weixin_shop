@@ -81,26 +81,22 @@ Route::group(['prefix' => 'admin','namespace'=>'Admin','middleware'=>['admin.log
 
 
 //首页路由
+//强制跳转到微信授权页面
+//header("Location: https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxeba0c3cbc3992a59&redirect_uri=http%3A%2F%2Fwww.vimx.cn&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect");
+//
 
+Route::get('index/verify','Home\IndexController@verify');  //微信网页认证跳转
 
-Route::get('index/verify',function(){
-    //强制跳转到微信授权页面
-    header("Location: https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxeba0c3cbc3992a59&redirect_uri=http%3A%2F%2Fwww.vimx.cn&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect");
-});
+Route::get('/pay_type/{order}/{type}','Home\PayController@pay_type'); //订单支付类型 并且调起支付宝支付
+//订单异步通知 需要取消CSRF 验证
+Route::post('/pay/alipay_verify','Home\PayController@notify_url');  //订单异步通知
+Route::post('/wx/notify','Home\PayController@wx_notify'); //微信异步通知
+//'middleware'=>['home.login']
+//
+Route::get('/','Home\IndexController@index');  //首页
 
+Route::group(['namespace'=>'Home','middleware'=>['home.login']],function(){
 
-Route::group(['namespace'=>'Home'],function(){
-    Route::get('/','IndexController@index',function(\Illuminate\Http\Request $request){
-        //微信商城首页用户登陆
-        //$info  = new \App\Http\Controllers\Home\GetController();
-        //$openid= $info->get_webuser_info($request->post('code'),$request->post('state'));  //吧CODE传递过去拿到 openID
-
-        //开启全局SESSION
-        //session(['openid'=>$openid]);
-
-        //显示模板
-
-    });
     Route::post('/to_cart','IndexController@to_cart'); //加入到购物车
     Route::post('/del_cart','IndexController@del_cart'); //删除购物车
     Route::post('/sum_cart','IndexController@sum_cart'); //购物车减一
@@ -112,10 +108,7 @@ Route::group(['namespace'=>'Home'],function(){
 
     Route::post('/to_order','IndexController@to_order'); //提交订单
     Route::get('/pay/{order}','PayController@pay'); //支付页面
-    Route::get('/pay_type/{order}/{type}','PayController@pay_type'); //订单支付类型
 
-    //订单异步通知 需要取消CSRF 验证
-    Route::post('/pay/alipay_verify','PayController@notify_url');  //订单异步通知
 
     //收货地址操作
     Route::get('/select/addr','IndexController@select_addr');//选择收货地址
@@ -135,24 +128,20 @@ Route::group(['namespace'=>'Home'],function(){
 
 
 
-
-
-
-
 //下面是测试的
 
 Route::group(['middleware'=>['home.login']],function(){
     //用户登陆成功
 
     Route::get('/a',function(){
-       return session('openid');
+       echo session('openid');
     });
 });
 
 //
 Route::get('get/access_token','Home\GetController@access_token');
 Route::get('get/info/{code}','Home\GetController@get_webuser_info');
-
+//Route::get('/home/wx','Home\PayController@wxpay');
 
 
 

@@ -11,12 +11,22 @@ require_once '../resources/org/alipay/wappay/buildermodel/AlipayTradeQueryConten
 require_once '../resources/org/alipay/wappay/buildermodel/AlipayTradeWapPayContentBuilder.php';
 require_once '../resources/org/alipay/wappay/service/AlipayTradeService.php';
 
+
+//微信
+require_once "../resources/org/wxpay/lib/WxPay.Api.php";
+require_once "../resources/org/wxpay/example/WxPay.JsApiPay.php";
+require_once "../resources/org/wxpay/example/WxPay.Config.php";
+require_once '../resources/org/wxpay/example/log.php';
+
+
+
 class PayController extends Controller
 {
     //订单支付
 
 
     public $config = array (
+        //支付宝的配置文件
         //应用ID,您的APPID。
         'app_id' => "2018070960504615",
 
@@ -46,29 +56,117 @@ class PayController extends Controller
 
     public function pay($order){
         //支付页面
-        $pay = Order::where('order_id',$order)->get()[0];
+        $pay = Order::where('order_id',$order)->first();
+
+        //微信支付
+        $tools = new \JsApiPay();
+        $openId = $tools->GetOpenid();   //获取用户的OPENID
+
+        //②、统一下单
+        $input = new \WxPayUnifiedOrder();
+        $input->SetBody("test");
+        $input->SetAttach("test");
+        $input->SetOut_trade_no($order);
+        $input->SetTotal_fee("1");
+        $input->SetTime_start(date("YmdHis"));
+        $input->SetTime_expire(date("YmdHis", time() + 5800));
+        $input->SetGoods_tag("test");
+        $input->SetNotify_url("http://shop.veimx.com/wx/notify");
+        $input->SetTrade_type("JSAPI");
+        $input->SetOpenid($openId);
+        $config = new \WxPayConfig();
+        $order = \WxPayApi::unifiedOrder($config, $input);
+
+        $jsApiParameters = $tools->GetJsApiParameters($order);
+
+
+        //
+
         return view('Home.pay.index',[
-            'pay' => $pay
+            'pay' => $pay,
+            'jsApiParameters' => $jsApiParameters
         ]);
+    }
+
+
+    public function wx_notify(){
+        //微信异步通知
+        $xml = file_get_contents('php://input');
+        $arr = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+
+
+        ksort($arr);
+        $str = '';
+        foreach ($arr as $k => $v){
+            if ($k == 'sign'){
+               continue;
+            }
+            $str .= $k.'='.$v.'&';
+        }
+
+        $str .= 'key=01c6d59a3f9024db6336662ac95c8e73';
+        $sign = strtoupper(hash_hmac('sha256', $str,'01c6d59a3f9024db6336662ac95c8e73'));
+
+        //验签名
+        if ( $sign === $arr['sign']) {
+//            校验返回的订单金额是否与商户侧的订单金额一致。修改订单表中的支付状态。
+            //交易成功
+            Order::where('order_id',$arr['out_trade_no'])
+                ->update([
+                    'pay_type'  => '1',  //支付类型 1为微信
+                    'end_time'  => date("Y-m-d H:i:s",strtotime($arr['time_end'])),   //支付时间
+                    'order_type'=> '1'     //是否支付 0未支付  1为支付成功
+                ]);
+
+        }
+
+
+        $return = ['return_code'=>'SUCCESS','return_msg'=>'OK'];
+        $xml = '<xml>';
+        foreach($return as $k=>$v){
+            $xml.='<'.$k.'><![CDATA['.$v.']]></'.$k.'>';
+        }
+        $xml.='</xml>';
+
+        echo $xml;
     }
 
     public function pay_type($order_id,$pay_type){
         //判断支付类型 1是微信支付 2是支付宝支付
-        $order_info = Order::where('order_id',$order_id)->get()[0];
+        $order_info = Order::where('order_id',$order_id)->first();
 
         switch ($pay_type){
-            case 1:
-                echo '未开通';
-                break;
             case 2:
                 //开始支付宝支付的业务代码
-                return $this->alipay($order_id,'购买商品:'.$order_info['order_price'].'元','0.01','在线支付');
+                if ($this->is_weixin()){
+                    return view('Home.pay.pay');
+                }else{
+                    return $this->alipay($order_id,'购买商品:'.$order_info['order_price'].'元','0.01','在线支付');
+                }
+
                 break;
         }
 
 
 
     }
+
+
+
+    public function is_weixin(){
+            //判断当前浏览器是不是微信
+        if ( strpos($_SERVER['HTTP_USER_AGENT'],
+
+                'MicroMessenger') !== false ) {
+
+            return true;
+
+        }
+
+        return false;
+
+    }
+
 
 
     public function alipay($out_trade_no,$subject,$total_amount,$body){//支付宝支付业务逻辑
@@ -113,53 +211,51 @@ class PayController extends Controller
         $alipaySevice->writeLog(var_export($_POST,true));
         $result = $alipaySevice->check($arr);
 
-        /* 实际验证过程建议商户添加以下校验。
-        1、商户需要验证该通知数据中的out_trade_no是否为商户系统中创建的订单号，
-        2、判断total_amount是否确实为该订单的实际金额（即商户订单创建时的金额），
-        3、校验通知中的seller_id（或者seller_email) 是否为out_trade_no这笔单据的对应的操作方（有的时候，一个商户可能有多个seller_id/seller_email）
-        4、验证app_id是否为该商户本身。
-        */
         if($result) {//验证成功
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //请在这里加上商户的业务逻辑程序代
 
+            /*
+             * 2018-07-14 22:56:26  array (
+              'gmt_create' => '2018-07-14 22:41:59',
+              'charset' => 'UTF-8',
+              'seller_email' => 'admin@veimx.com',
+              'subject' => '购买商品:1000元',
+              'sign' => 'pzS7t4VM5liSmxjgpl7g4acAohqypbj35HStPRKcfhmPUNzkws9v6KtiTEYdqgS5ra8Fd127hZwmmFzzTw/Oco9Wl6H+XyHuhKX3d+9yTSnJTvRaT968FbHAxo0BL3mqXBybzMa3nSXG6+oKaIWPwyopCBRU0NQvlvANdMXpkeLgED/SL32yr6FiTbZZXtEAa1momPW+8BRvxRChvg71+KkoRyT0cgSiw4ENoB9+QwlBePukUwe7pZIBNPJPZRv8N0gyE8ngBzVg16zqAKa3KxYa5AqJghoDs1eHN++zL15/2z9mYu9gycWrHF0PbD8XGTMLnwymTuZpRiwLFGrNrA==',
+              'body' => '在线支付',
+              'buyer_id' => '2088421357618795',
+              'invoice_amount' => '0.01',
+              'notify_id' => '6765a063d4e82a008cd7cabefdb1d8fm3l',
+              'fund_bill_list' => '[{"amount":"0.01","fundChannel":"ALIPAYACCOUNT"}]',
+              'notify_type' => 'trade_status_sync',
+              'trade_status' => 'TRADE_SUCCESS',        //交易状态
+              'receipt_amount' => '0.01',
+              'buyer_pay_amount' => '0.01',
+              'app_id' => '2018070960504615',
+              'sign_type' => 'RSA2',
+              'seller_id' => '2088702382635572',
+              'gmt_payment' => '2018-07-14 22:41:59',  //买家付款时间
+              'notify_time' => '2018-07-14 22:56:26',
+              'version' => '1.0',
+              'out_trade_no' => 'Wx_15315793102519',   //商户订单号
+              'total_amount' => '0.01',                 //本次交易支付的订单金额，单位为人民币（元）
+              'trade_no' => '2018071421001004790510831822',
+              'auth_app_id' => '2018070960504615',
+              'buyer_logon_id' => 'ser***@veimx.com',   //
+              'point_amount' => '0.00',
+            )
+             *
+             * */
+            $order_id = $_POST['out_trade_no'];   //商户订单号
 
-            //——请根据您的业务逻辑来编写程序（以下代码仅作参考）——
-
-            //获取支付宝的通知返回参数，可参考技术文档中服务器异步通知参数列表
-
-            //商户订单号
-
-            $out_trade_no = $_POST['out_trade_no'];
-
-            //支付宝交易号
-
-            $trade_no = $_POST['trade_no'];
-
-            //交易状态
-            $trade_status = $_POST['trade_status'];
-
-
-            if($_POST['trade_status'] == 'TRADE_FINISHED') {
-
-                //判断该笔订单是否在商户网站中已经做过处理
-                //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
-                //请务必判断请求时的total_amount与通知时获取的total_fee为一致的
-                //如果有做过处理，不执行商户的业务程序
-
-                //注意：
-                //退款日期超过可退款期限后（如三个月可退款），支付宝系统发送该交易状态通知
+            if ($_POST['trade_status'] == 'TRADE_SUCCESS'){
+                //交易成功
+                Order::where('order_id',$order_id)
+                    ->update([
+                        'pay_type'  => '2',  //支付类型 2为支付宝
+                        'end_time'  => $_POST['gmt_payment'],   //支付时间
+                        'order_type'=> '1'     //是否支付 0未支付  1为支付成功
+                    ]);
             }
-            else if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
-                //判断该笔订单是否在商户网站中已经做过处理
-                //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
-                //请务必判断请求时的total_amount与通知时获取的total_fee为一致的
-                //如果有做过处理，不执行商户的业务程序
-                //注意：
-                //付款完成后，支付宝系统发送该交易状态通知
-            }
-            //——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
-            file_put_contents('./spade.log','11111'.time(),FILE_APPEND);
+
             echo "success";		//请不要修改或删除
 
         }else {

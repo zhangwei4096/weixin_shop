@@ -6,6 +6,7 @@ use App\Http\Model\Addrs;
 use App\Http\Model\Cart;
 use App\Http\Model\Order;
 use App\Http\Model\Product;
+use App\Http\Model\System;
 use App\Http\Model\users;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -13,10 +14,29 @@ use Illuminate\Support\Facades\DB;
 
 class IndexController extends Controller
 {
+
+    public function verify(){
+        //微信跳转认证获取用户openid
+
+        $AppID =  (json_decode(System::find(3)['data'],true))['AppID'];
+        header("Location: https://open.weixin.qq.com/connect/oauth2/authorize?appid=".$AppID."&redirect_uri=http%3A%2F%2Fshop.veimx.com&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect");
+    }
+
 //微信商城首页
-    public function index(){
+    public function index(Request $request){
         //获取所有商品信息
-        session(['openid'=>'ouTkduJIVI_J5P7CTg8ucpdVhMlM']);
+        //session(['openid'=>'ouTkduJIVI_J5P7CTg8ucpdVhMlM']);
+        if ($request->get('code')){
+            $info  = new GetController();
+            $openid= $info->get_webuser_info($request->post('code'),$request->post('state'));  //吧CODE传递过去拿到 openID
+
+            //开启全局SESSION
+            session(['openid'=>$openid]);
+        }
+
+        if (!session('openid')){
+            $this->verify();
+        }
 
         $data = DB::table('weixin_product')->where('type','1')->orderBy('id','DESC')->get();
 
