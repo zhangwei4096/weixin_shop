@@ -54,7 +54,9 @@
             <dt><i class="Hui-iconfont">&#xe627;</i> 订单管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
-                    <li><a href="{{ url('admin/order/index') }}" title="订单管理">订单列表</a></li>
+                    <li><a href="{{ url('admin/order/index') }}" title="所有订单">所有订单</a></li>
+                    <li><a href="{{ url('admin/order/paid') }}" title="已支付">已支付订单</a></li>
+                    <li><a href="{{ url('admin/order/nys') }}" title="已支付">未发货订单</a></li>
                 </ul>
             </dd>
         </dl>

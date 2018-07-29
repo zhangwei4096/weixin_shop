@@ -10,20 +10,55 @@ use Illuminate\Support\Facades\DB;
 class OrderController extends Controller
 {
     //
-    public function get(Request $request){
+    public function get(Request $request,$type){
         //数据请求接口
         $result = $request->post();
         $limit  = $result['limit'];
         $page   = ($result['page']-1)*$limit;;
-        $data   = DB::table('weixin_order')
-            ->select('id','order_id','order_price','order_data','order_time','order_type','end_time','is_goods')
-            ->offset($page)->limit($limit)->orderBy('id','desc')->get();
-        $info   = [
-            'code' => 0,
-            'msg'  => '',
-            'count'=> count(Order::all()),
-            'data' => $data
-        ];
+        if ($type==1){
+            //已支付的订单数据
+            $data   = DB::table('weixin_order')
+                ->where('order_type','1')
+                ->select('id','order_id','order_price','order_data','order_time','order_type','end_time','is_goods')
+                ->offset($page)->limit($limit)->orderBy('id','desc')->get();
+            $info   = [
+                'code' => 0,
+                'msg'  => '',
+                'count'=> Order::where('order_type','1')->count(),
+                'data' => $data
+            ];
+
+        }else if($type == 2){
+            //已支付但是没有发货的订单
+            $data   = DB::table('weixin_order')
+                ->where([
+                    ['order_type','1'],
+                    ['is_goods','0']
+                ])
+                ->select('id','order_id','order_price','order_data','order_time','order_type','end_time','is_goods')
+                ->offset($page)->limit($limit)->orderBy('id','desc')->get();
+            $info   = [
+                'code' => 0,
+                'msg'  => '',
+                'count'=> Order::where([
+                    ['order_type','1'],
+                    ['is_goods','0']
+                ])->count(),
+                'data' => $data
+            ];
+
+        }else{
+            $data   = DB::table('weixin_order')
+                ->select('id','order_id','order_price','order_data','order_time','order_type','end_time','is_goods')
+                ->offset($page)->limit($limit)->orderBy('id','desc')->get();
+            $info   = [
+                'code' => 0,
+                'msg'  => '',
+                'count'=> count(Order::all()),
+                'data' => $data
+            ];
+        }
+
 
         return $info;
 

@@ -1,4 +1,5 @@
 @extends('Admin.index.layout.common')
+{{--已支付订单--}}
 @section('content')
     <style>
         .layui-table-cell {
@@ -6,20 +7,10 @@
         }
     </style>
     <section class="Hui-article-box">
-        <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 订单管理 <span class="c-gray en">&gt;</span> 所有订单 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+        <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 订单管理 <span class="c-gray en">&gt;</span> 未发货订单 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
         <div class="Hui-article">
 
             <div class="pd-20">
-                {{--<div class="cl pd-5 bg-1 bk-gray mt-20">
-                        <span class="l">
-                            <a href="javascript:;" data-type="getCheckData" class="btn btn-danger radius">
-                                <i class="Hui-iconfont">&#xe6e2;</i> 批量删除
-                            </a>
-                            <a class="btn btn-primary radius" onclick="product_add('添加产品','{{ url('admin/product/add') }}')" href="javascript:;">
-                                <i class="Hui-iconfont">&#xe600;</i> 添加产品
-                            </a>
-                        </span>
-                </div>--}}
                 <div class="mt-20">
                     <table class="layui-hide" id="list" lay-filter="demo"></table>
                     <script type="text/html" id="barDemo">
@@ -30,9 +21,9 @@
                 </div>
             </div>
         </div>
-    {{ csrf_field() }}
-@endsection
-@section('javascript')
+        {{ csrf_field() }}
+        @endsection
+        @section('javascript')
             <script type="text/javascript" src="{{ URL::asset('admin/lib/My97DatePicker/4.8/WdatePicker.js') }}"></script>
             <script type="text/javascript" src="{{ URL::asset('admin/lib/datatables/1.10.0/jquery.dataTables.min.js') }}"></script>
             <script type="text/javascript" src="{{ URL::asset('admin/lib/laypage/1.2/laypage.js ') }}"></script>
@@ -112,7 +103,7 @@
 
                     table.render({
                         elem: '#list'
-                        ,url:'{{ url('admin/order/get/0') }}'
+                        ,url:'{{ url('admin/order/get/2') }}'
                         ,page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
                             layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
                             //,curr: 5 //设定初始在第 5 页
@@ -150,5 +141,5 @@
 
                 });
 
-    </script>
+            </script>
 @endsection

@@ -66,7 +66,15 @@ Route::group(['prefix' => 'admin','namespace'=>'Admin','middleware'=>['admin.log
         return view('Admin.order.index');
     });
 
-    Route::get('order/get','OrderController@get'); //获取所有用户的订单数据
+    Route::get('order/paid',function(){
+        return view('Admin.order.paid');  //已支付的订单展示页面
+    });
+    Route::get('order/nys',function(){
+        return view('Admin.order.nys');  //已支付但未发货的订单展示页面
+    });
+
+    Route::get('order/get/{type}','OrderController@get'); //获取用户的订单数据  type参数为可选的
+
     Route::get('order/info/{id}','OrderController@info'); //获取订单里面的信息
     Route::post('/order/edit','OrderController@edit'); //修改订单
     Route::post('/order/delete','OrderController@delete'); //删除订单
