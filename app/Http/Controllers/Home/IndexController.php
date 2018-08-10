@@ -6,6 +6,7 @@ use App\Http\Model\Addrs;
 use App\Http\Model\Cart;
 use App\Http\Model\Order;
 use App\Http\Model\Product;
+use App\Http\Model\Shop;
 use App\Http\Model\System;
 use App\Http\Model\users;
 use Illuminate\Http\Request;
@@ -25,7 +26,7 @@ class IndexController extends Controller
 //微信商城首页
     public function index(Request $request){
         //获取所有商品信息
-        //session(['openid'=>'ouTkduJIVI_J5P7CTg8ucpdVhMlM']);
+        session(['openid'=>'ouTkduJIVI_J5P7CTg8ucpdVhMlM']);
         if ($request->get('code')){
             $info  = new GetController();
             $openid= $info->get_webuser_info($request->post('code'),$request->post('state'));  //吧CODE传递过去拿到 openID
@@ -250,11 +251,13 @@ class IndexController extends Controller
         $addrs_id = $request->post('addrsid'); //收货地址ID
         $addrs    = Addrs::where([['id',$addrs_id],['user_id',$user_id]])->get()[0]; //订单地址信息
         $order_id = 'Wx_'.time().mt_rand(1000,9999); //订单ID
+        $shop_id  = Shop::where('id',users::where('openid',session('openid'))->value('shop_id'))->value('id');//所属店铺ID  为了方便后续的统计
         //执行事务处理
         DB::beginTransaction();
         try{
             $one = DB::table('weixin_order')->insert([
                 'user_id'    => $user_id,
+                'shop_id'    => $shop_id ?? 0,  //如果不存在就是管理员ID
                 'order_id'   => $order_id,
                 'order_info' => json_encode($new_json),
                 'order_data' => $request->post('order_data'), //用户备注
