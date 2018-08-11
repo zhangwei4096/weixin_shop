@@ -103,4 +103,13 @@ class ShopController extends Controller
             ];
         }
     }
+
+    public function getOrders($id){
+        //获取对应店铺的订单数据
+        return view('Admin.shop.orders',[
+            'id' => $id
+        ]);
+    }
+
+
 }

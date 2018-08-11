@@ -14,7 +14,7 @@ class OrderController extends Controller
         //数据请求接口
         $result = $request->post();
         $limit  = $result['limit'];
-        $page   = ($result['page']-1)*$limit;;
+        $page   = ($result['page']-1)*$limit;
         if ($type==1){
             //已支付的订单数据
             $data   = DB::table('weixin_order')
@@ -63,6 +63,29 @@ class OrderController extends Controller
         return $info;
 
     }
+
+
+    public function getShopOrders(Request $request ,$id){
+        //获取店铺已售数据
+        $result = $request->post();
+        $limit  = $result['limit'];
+        $page   = ($result['page']-1)*$limit;
+        $data   = DB::table('weixin_order')
+            ->where('order_type','1')
+            ->where('shop_id',$id)  //店铺ID
+            ->select('id','order_id','order_price','order_data','order_time','order_type','end_time','is_goods')
+            ->offset($page)->limit($limit)->orderBy('id','desc')->get();
+        $info   = [
+            'code' => 0,
+            'msg'  => '',
+            'count'=> Order::where('order_type','1')->count(),
+            'data' => $data
+        ];
+
+        return $info;
+    }
+
+
     public function info($id){
         $order = Order::find($id);
 

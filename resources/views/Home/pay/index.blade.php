@@ -143,7 +143,9 @@
                 WeixinJSBridge.log(res.err_msg);
                 if (res.err_msg == "get_brand_wcpay_request:ok") {
                     // message: "微信支付成功!",
-                    layer.msg('恭喜您支付成功',{icon:1,time:2000});
+                    layer.msg('恭喜您支付成功',{icon:1,time:2000},function () {
+                            window.location.href= "{{ url('/') }}";
+                    });
                 }else if (res.err_msg == "get_brand_wcpay_request:cancel") {
                     // message: "已取消微信支付!"
                 }

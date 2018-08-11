@@ -21,7 +21,7 @@
                             </a>
                         </span>
                 </div>
-                <div class="mt-20">
+                <div class="mt-10">
                     <table class="layui-hide" id="list" lay-filter="demo"></table>
                     <script type="text/html" id="barDemo">
                         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="send">生成二维码</a>
@@ -59,18 +59,19 @@
 
                 }
                 ,cols: [[
-                    {type:'checkbox'}
-                    ,{field:'id', width:50, title: 'ID', sort: false}
-                    ,{field:'name', width:400, title: '店铺名称'}
-                    ,{field:'addr', width:400, title: '店铺地址' }
-                    ,{field:'thumb', width:400,style:'height:50px;width:100%;line-height:48px!important;', title: '店铺二维码' ,templet: function(d){
+                    {field:'name', width:300, title: '店铺名称'}
+                    ,{field:'addr', width:300, title: '店铺地址' }
+                    ,{field:'thumb', width:200,style:'height:50px;width:100%;line-height:48px!important;', title: '店铺二维码' ,templet: function(d){
                             if (d.thumb == null){
                                 return '请生成二维码'
                             }else{
                                 return '<div><a href="'+d.thumb+'" title="二维码下载" download="'+d.id+'.png"><img  src="'+d.thumb+'"  height="45" width="45"/></a></div>'
                             }
                         } ,align:'center'}
-                    ,{fixed: 'right',  title: '操作', align:'center', toolbar: '#barDemo'}
+                    ,{field:'id', width:300, title: '商铺数据' ,align:'center',templet:function(d){
+                            return '<p  class="layui-btn layui-btn-xs layui-btn-warm" name="1111" onclick="showData('+d.id+',\''+d.name+'\')"> 查看订单数据 </p>';
+                        }}
+                    ,{fixed: 'right',align:'center' , title: '操作', toolbar: '#barDemo'}
                 ]]
 
             });
@@ -127,7 +128,7 @@
                         '    </form>\n' +
                         '</div>',
                         end: function () {
-                            location.reload();
+                            $(".layui-laypage-btn").click();
                         }
                     });
 
@@ -203,11 +204,31 @@
                 '    </form>\n' +
                 '</div>',
                 end: function () {
-                    location.reload();
+                    $(".layui-laypage-btn").click();
                 }
             });
 
         }
+
+        /*
+        * 查看商铺数据订单
+        *
+        * */
+
+        function showData(id,title) {
+            layer.open({
+                type: 2,
+                area: ['100%', '100%'], //宽高
+                title: title+" 店铺已售数据查看",
+                content: "{{ url('admin/shop/') }}/"+id,
+                end: function () {
+                    $(".layui-laypage-btn").click();
+                }
+            });
+
+        }
+
+
 
         function saveContent (id){
             //保存
@@ -238,7 +259,7 @@
                 //修改
                 $.post('{{ url('admin/shop/update') }}',{id:id,_token:_token,name:name,addr:addr},function(result){
                     if(result.msg=='success'){
-                        layer.msg(result.data,function(){
+                        layer.msg(result.data,{time:2000},function(){
                             layer.closeAll('page');
                         });
                     }

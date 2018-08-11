@@ -74,7 +74,7 @@
         <a href="javascript:;">
             <div class="touxiang"><img src="{{ $user->thumb }}" alt=""></div>
             <div class="name">{{ $user->nickname }}</div>
-            <div class="gztt">认证会员，已关注</div>
+            <div class="gztt" style="margin-top: -10px;">认证会员，已关注</div>
         </a>
     </div>
     {{--<div class="vipsan">
@@ -115,22 +115,30 @@
         </li>
     </ul>
 </div>
-<div class="nav">
-    <ul>
-        <li>
-            <a href="{{ url('/') }}"><span style="font-family: 'icomoon';"></span><span>首页</span></a>
-        </li>
-        <li style="position:relative;">
-            <a href="{{ url('/my/orders') }}"><span style="font-family: 'icomoon';"></span><span>我的订单</span></a>
-        </li>
-        <li>
-            <a href="{{ url('/cart') }}"><span style="font-family: 'icomoon';"></span><span>购物车</span></a>
-        </li>
-        <li>
-            <a href="{{ url('/center') }}"><span style="font-family: 'icomoon';"></span><span>个人中心</span></a>
-        </li>
-    </ul>
-</div>
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('home/new/css/aui.css') }}"/>
+{{--<link rel="stylesheet" href="{{ URL::asset('home/new/css/aui-flex.css') }}">--}}
+
+<footer class="aui-bar aui-bar-tab aui-bar-tab-cl aui-border-t" id="footer">
+    <a href="{{ url('/') }}" class="aui-bar-tab-item " tapmode>
+        <i class="aui-iconfont aui-icon-home"></i>
+        <div class="aui-bar-tab-label">首页</div>
+    </a>
+    <a class="aui-bar-tab-item" tapmode href="{{ url('/my/orders') }}">
+        <i class="aui-iconfont aui-icon-menu"></i>
+        <div class="aui-bar-tab-label">我的订单</div>
+    </a>
+    <a class="aui-bar-tab-item" tapmode href="{{ url('/cart') }}">
+        <i class="aui-iconfont aui-icon-cart"></i>
+        <div class="aui-bar-tab-label">购物车</div>
+    </a>
+    <a href="{{ url('/center') }}" class="aui-bar-tab-item" tapmode>
+        <i class="aui-iconfont aui-icon-my"></i>
+        <div class="aui-bar-tab-label">个人中心</div>
+    </a>
+</footer>
+{{--<script type="text/javascript" src="{{ URL::asset('home/new/script/api.js') }}"></script>--}}
+<script type="text/javascript" src="{{ URL::asset('home/new/script/aui-tab.js') }}"></script>
+{{--<script type="text/javascript" src="{{ URL::asset('home/new/script/aui-slide.js') }}"></script>--}}
 <script>
     function addr(title,url) {
         var index = layer.open({
@@ -141,5 +149,6 @@
         layer.full(index);
     }
 </script>
+
 </body>
 </html>

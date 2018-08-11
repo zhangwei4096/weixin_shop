@@ -216,7 +216,13 @@ class IndexController extends Controller
     }
 
 
-
+    /*
+     * 提交订单处理
+     * 计算总成本价格
+     * 计算总销售价格
+     * 计算利润
+     *
+     * */
     public function to_order(Request $request){
         //提交订单 事务处理 order_info 订单信息表 用JSON存储
         $cid     = explode(',',$request->post('cid'));  //获取选中的商品
@@ -242,8 +248,12 @@ class IndexController extends Controller
 
         $price = 0;
         foreach ($new_json as &$v){  //JSON对象
-            $v->price = $v->num*$v->xs_price;
+            $v->price = $v->num*$v->xs_price; //销售价格*数量
             $price   += $v->price; //总价
+
+            /*
+             * 可能后续还需要添加总成本价格 以便于计算利润
+             * */
         }
 
         //需要吧收货地址信息提取出来单独写入订单表中
@@ -281,6 +291,23 @@ class IndexController extends Controller
         }
 
 
+    }
+
+
+
+    public function product($id){
+        //商品详细信息列表页面
+        $Product = Product::where('id',$id)->first();
+
+        /*
+         * 单独提取出图片作为轮播图
+         * */
+
+
+
+        return view('Home.index.product',[
+            'data' => $Product
+        ]);
     }
 
 

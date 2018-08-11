@@ -48,9 +48,8 @@ Route::group(['prefix' => 'admin','namespace'=>'Admin','middleware'=>['admin.log
     Route::post('shop/delete','ShopController@delete');
     Route::post('shop/update','ShopController@update');
     Route::post('shop/scerweima','ShopController@scerweima'); //生成二维码
-    Route::get('shop/{id}',function($id){
-        return $id;  //测试的
-    });
+    Route::get('shop/{id}','ShopController@getOrders');   //获取对应店铺的订单数据
+    Route::get('shop/pays/{id}','OrderController@getShopOrders'); //获取店铺已售商品数据
 
 
     //会员管理
@@ -105,6 +104,7 @@ Route::get('/','Home\IndexController@index');  //首页
 
 Route::group(['namespace'=>'Home','middleware'=>['home.login']],function(){
 
+    Route::get('/product/{id}','IndexController@product'); //商品详细列表页面
     Route::post('/to_cart','IndexController@to_cart'); //加入到购物车
     Route::post('/del_cart','IndexController@del_cart'); //删除购物车
     Route::post('/sum_cart','IndexController@sum_cart'); //购物车减一

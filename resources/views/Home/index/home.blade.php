@@ -1,3 +1,4 @@
+{{--
 <!DOCTYPE html>
 <html>
 <head>
@@ -209,7 +210,8 @@
     </li>
     @endforeach
     @csrf
-    {{--<li>
+    --}}
+{{--<li>
         <a href="#"><img src="./home/images/1.jpg" /></a>
         <a href="#">
             <i>杞里香枸杞子宁夏杞里香枸香枸香枸香枸香枸杞子宁杞里香枸杞</i>
@@ -228,7 +230,8 @@
                 </em>
             </i>
         </a>
-    </li>--}}
+    </li>--}}{{--
+
 </ul>
 
 
@@ -319,4 +322,208 @@
     }
 </script>
 </body>
+</html>--}}
+
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>手袋购物网</title>
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('home/new/css/aui.css') }}"/>
+    <link rel="stylesheet" href="{{ URL::asset('home/new/css/aui-flex.css') }}">
+    <link rel="stylesheet" href="{{ URL::asset('home/new/css/aui-slide.css') }}">
+    <style>
+        .aui-searchbar {
+            background: transparent;
+        }
+
+        .aui-bar-nav .aui-searchbar-input {
+            background-color: #ffffff;
+        }
+
+        .aui-bar-light .aui-searchbar-input {
+            background-color: #f5f5f5;
+        }
+
+        .bg-dark {
+            background: #333333 !important;
+        }
+
+        .aui-slide-node img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .aui-grid .aui-row-img-wt i {
+            width: 38px;
+            height: 38px;
+            display: inline-block;
+            margin: 0 auto
+        }
+
+    </style>
+</head>
+<body style="background:none">
+
+<header class="aui-bar aui-bar-nav">
+    <a class="aui-pull-left aui-btn">
+        <!-- <span class="aui-iconfont aui-icon-camera"></span> -->
+    </a>
+    <div class="aui-title" style="left:2rem; right: 2rem;">
+        <div class="aui-searchbar" id="search">
+            <div class="aui-searchbar-input aui-border-radius">
+                <i class="aui-iconfont aui-icon-search"></i>
+                <input type="search" placeholder="人参特卖会" id="search-input">
+                <div class="aui-searchbar-clear-btn">
+                    <i class="aui-iconfont aui-icon-close"></i>
+                </div>
+            </div>
+            <div class="aui-searchbar-btn" tapmode>取消</div>
+        </div>
+    </div>
+    <a class="aui-pull-right aui-btn">
+        <span class="aui-iconfont aui-icon-comment"></span>
+    </a>
+</header>
+<!-- 轮播图 -->
+<div>
+    <img src="http://shop.veimx.com//ueditor/php/upload/image/20180811/1533990494340649.jpg"  style="width: 100%;height: 188px;" alt="">
+</div>
+
+<div id="aui-slide">
+    <div class="aui-slide-wrap">
+        <div class="aui-slide-node bg-dark">
+            <img src="/ueditor/php/upload/image/20180811/1533992065275865.jpg"/>
+        </div>
+        <div class="aui-slide-node bg-dark">
+            <img src="/ueditor/php/upload/image/20180811/1533992065661364.jpg"/>
+        </div>
+    </div>
+    <div class="aui-slide-page-wrap"><!--分页容器--></div>
+</div>
+
+
+<div style="height:10px; background:#efefef"></div>
+<div class="aui-content">
+    <ul class="aui-list aui-media-list">
+
+        @foreach($data as $v)
+            <li class="aui-list-item">
+                <a href="{{ url('/product') }}/{{ $v->id }}">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-inner">
+                            <div class="aui-list-item-text">
+                                <div class="aui-list-item-title aui-font-size-18">{{ $v->title }}</div>
+                            </div>
+                            <div class="aui-info aui-padded-b-0">
+                                <div class="aui-info-item aui-font-size-12">
+                                    <span class="aui-margin-l-5">￥{{ $v->xs_price }}</span>
+                                </div>
+                                <div class="aui-info-item aui-font-size-12">好评率100%</div>
+                            </div>
+                        </div>
+                        <div class="aui-list-item-media">
+                            <img src="{{ $v->thumb }}">
+                        </div>
+                    </div>
+                </a>
+            </li>
+        @endforeach
+        {{--<li class="aui-list-item">
+            <div class="aui-media-list-item-inner">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-text">
+                        <div class="aui-list-item-title aui-font-size-18"><i class="product-name">全球购</i>意大利进口 mellin美林
+                            宝宝手指饼干宝宝零食饼干 360g 手指饼干 4M+
+                        </div>
+                    </div>
+                    <div class="aui-info aui-padded-b-0">
+                        <div class="aui-info-item aui-font-size-12">
+                            <span class="aui-margin-l-5">￥45.00</span>
+                        </div>
+                        <div class="aui-info-item aui-font-size-12">好评率100%</div>
+                    </div>
+                </div>
+                <div class="aui-list-item-media">
+                    <img src="{{ URL::asset('home/new/image/demo/pa4.jpg') }}">
+                </div>
+            </div>
+        </li>--}}
+    </ul>
+</div>
+<div style="padding:0.75rem 0.75rem 0 0.75rem"></div>
+
+<div style="height:48px"></div>
+<div id="demo" style="display:none">1</div>
+<footer class="aui-bar aui-bar-tab aui-bar-tab-cl aui-border-t" id="footer">
+    <a href="{{ url('/') }}" class="aui-bar-tab-item " tapmode>
+        <i class="aui-iconfont aui-icon-home"></i>
+        <div class="aui-bar-tab-label">首页</div>
+    </a>
+    <a class="aui-bar-tab-item" tapmode href="{{ url('/my/orders') }}">
+        <i class="aui-iconfont aui-icon-menu"></i>
+        <div class="aui-bar-tab-label">我的订单</div>
+    </a>
+    <a class="aui-bar-tab-item" tapmode href="{{ url('/cart') }}">
+        <i class="aui-iconfont aui-icon-cart"></i>
+        <div class="aui-bar-tab-label">购物车</div>
+    </a>
+    <a href="{{ url('/center') }}" class="aui-bar-tab-item" tapmode>
+        <i class="aui-iconfont aui-icon-my"></i>
+        <div class="aui-bar-tab-label">个人中心</div>
+    </a>
+</footer>
+
+</body>
+<script type="text/javascript" src="{{ URL::asset('home/new/script/api.js') }}"></script>
+<script type="text/javascript" src="{{ URL::asset('home/new/script/aui-tab.js') }}"></script>
+<script type="text/javascript" src="{{ URL::asset('home/new/script/aui-slide.js') }}"></script>
+<script type="text/javascript">
+    var slide = new auiSlide({
+        container: document.getElementById("aui-slide"),
+        // "width":300,
+        "height": 185,
+        "speed": 300,
+        "autoPlay": 5000, //自动播放时间
+        "pageShow": true,
+        "loop": true,
+        "pageStyle": 'dot',
+        'dotPosition': 'center'
+    })
+
+    function currentFun(index) {
+        console.log(index);
+    }
+
+    var slide2 = new auiSlide({
+        container: document.getElementById("aui-slide2"),
+        // "width":300,
+        "height": 220,
+        "speed": 300,
+        "autoPlay": 0, //自动播放
+        "pageShow": true,
+        "loop": true,
+        "pageStyle": 'dot',
+        'dotPosition': 'center'
+    })
+    var slide3 = new auiSlide({
+        container: document.getElementById("aui-slide3"),
+        // "width":300,
+        "height": 240,
+        "speed": 500,
+        "autoPlay": 3000, //自动播放
+        "loop": true,
+        "pageShow": true,
+        "pageStyle": 'line',
+        'dotPosition': 'center'
+    })
+    console.log(slide3.pageCount());
+</script>
+
 </html>
+
+
+
