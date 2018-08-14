@@ -84,11 +84,6 @@ class GetController extends Controller
 
     }
 
-
-
-
-
-
     //发送请求
     public static function msg_get(string $url):string
     {
@@ -134,6 +129,5 @@ class GetController extends Controller
         return $output;
 
     }
-
 
 }

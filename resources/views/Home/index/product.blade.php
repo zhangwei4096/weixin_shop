@@ -5,17 +5,17 @@
     <meta name="viewport"
           content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
     <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
-    <link rel="stylesheet" type="text/css" href="{{ URL::asset('layui/css/layui.css') }}" media="all" />
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('layui/css/layui.css') }}" media="all"/>
     <script type="text/javascript" src="{{ URL::asset('layui/layui.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('layer/layer.js') }}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ URL::asset('layer/theme/default/layer.css') }}" media="all" />
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('layer/theme/default/layer.css') }}" media="all"/>
     <script type="text/javascript" src="{{ URL::asset('home/new/script/api.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('home/new/script/aui-popup-new.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('home/new/script/aui-slide.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('home/new/script/aui-collapse.js') }}"></script>
     <script src="{{ URL::asset('home/new/script/jquery.min.js') }}"></script>
     <script src="{{ URL::asset('home/new/script/ratchet.min.js') }}"></script>
-    <title>手袋购物网</title>
+    <title>恒昀达商贸</title>
     <style type="text/css">
         .aui-bar-tab {
             position: static;
@@ -50,25 +50,19 @@
         <span class="aui-iconfont aui-icon-left" style="font-weight:800"></span>
     </a>
     <div class="aui-title">商品详情</div>
-    <a class="aui-pull-right aui-btn">
+    {{--<a class="aui-pull-right aui-btn">
         <span class="aui-iconfont aui-icon-more" tapmode onclick="showPopup('top-right')"
               style="display:block; height:40px; line-height:40px;"></span>
-    </a>
+    </a>--}}
 </header>
 <div id="aui-slide2">
+    {{--轮播图--}}
     <div class="aui-slide-wrap">
+        @foreach($img as $v)
         <div class="aui-slide-node aui-slide-node-middle aui-slide-node-center">
-            <img src="{{ URL::asset('home/new/image/sp1.jpg') }}" alt="">
+            <img src="{{ $v }}" alt="轮播图" title="轮播图">
         </div>
-        <div class="aui-slide-node aui-slide-node-middle aui-slide-node-center">
-            <img src="{{ URL::asset('home/new/image/sp1.jpg') }}" alt="">
-        </div>
-        <div class="aui-slide-node aui-slide-node-middle aui-slide-node-center">
-            <img src="{{ URL::asset('home/new/image/sp1.jpg') }}" alt="">
-        </div>
-        <div class="aui-slide-node aui-slide-node-middle aui-slide-node-center">
-            <img src="{{ URL::asset('home/new/image/sp1.jpg') }}" alt="">
-        </div>
+        @endforeach
     </div>
     <div class="aui-slide-page-wrap">
         <!--分页容器-->
@@ -113,20 +107,30 @@
 
 <!-- 弹出 -->
 <footer class="aui-bar aui-bar-tab aui-margin-t-15  aui-border-t">
+    <div class="aui-bar-tab-item" tapmode style="width: 3rem;cursor: pointer;" onclick="window.location.href='{{ url('/cart') }}' ">
+
+        <i class="aui-iconfont aui-icon-cart aui-text-info"></i>
+        <div class="aui-bar-tab-label aui-text-info">
+            购物车
+        </div>
+
+    </div>
     <div class="aui-bar-tab-item" tapmode style="width: 3rem;cursor: pointer;">
-        <a href="{{ url('/cart') }}" onclick="window.location.href=this.href;">
-            <i class="aui-iconfont aui-icon-cart aui-text-info"></i>
+        <a href="tel:15567599555">
+            <i class="aui-iconfont aui-icon-comment aui-text-info"></i>
             <div class="aui-bar-tab-label aui-text-info">
-                购物车
+                咨询客服
             </div>
         </a>
     </div>
-    <div class="aui-bar-tab-item aui-bg-warning aui-text-white" tapmode style="width: auto; cursor: pointer" onclick="toCart({{ $data->id }})">加入购物车</div>
+    <div class="aui-bar-tab-item aui-bg-warning aui-text-white" tapmode style="width: auto; cursor: pointer"
+         onclick="toCart({{ $data->id }})">加入购物车
+    </div>
     {{--<div class="aui-bar-tab-item aui-bg-danger aui-text-white" tapmode style="width: auto;">立即购买</div>--}}
 </footer>
 
 <script charset="utf-8">
-    function toCart(id){
+    function toCart(id) {
         //加入购物车
         //var num = parseInt(document.getElementById('number'+id).value);
         var num = parseInt(1);
@@ -134,25 +138,26 @@
         var _token = $('input[name=_token]').val();
 
         $.ajax({
-            type:"POST",
-            url:"{{url('/to_cart')}}",
-            dataType:"json",
-            data:{_token:_token,id:id,num:num},
-            beforeSend:function(){
+            type: "POST",
+            url: "{{url('/to_cart')}}",
+            dataType: "json",
+            data: {_token: _token, id: id, num: num},
+            beforeSend: function () {
                 //some js code
             },
-            success:function(result){
-                if (result.msg = 'success'){
-                    layer.msg('加入购物车成功',{time:2000,icon:1});
-                }else {
+            success: function (result) {
+                if (result.msg = 'success') {
+                    layer.msg('加入购物车成功', {time: 2000, icon: 1});
+                } else {
                     layer.msg('加入购物车失败，请重试！');
                 }
             },
-            error:function(){
-                layer.msg('加入购物车失败，请稍后再试！',{time:2000,icon:5});
+            error: function () {
+                layer.msg('加入购物车失败，请稍后再试！', {time: 2000, icon: 5});
             }
         })
     }
+
     window.onload = function () {
 
         //加入购物车

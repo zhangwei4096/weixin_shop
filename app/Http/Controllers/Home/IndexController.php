@@ -26,7 +26,7 @@ class IndexController extends Controller
 //微信商城首页
     public function index(Request $request){
         //获取所有商品信息
-        session(['openid'=>'ouTkduJIVI_J5P7CTg8ucpdVhMlM']);
+        //session(['openid'=>'ouTkduJIVI_J5P7CTg8ucpdVhMlM']);
         if ($request->get('code')){
             $info  = new GetController();
             $openid= $info->get_webuser_info($request->post('code'),$request->post('state'));  //吧CODE传递过去拿到 openID
@@ -40,9 +40,11 @@ class IndexController extends Controller
         }
 
         $data = DB::table('weixin_product')->where('type','1')->orderBy('id','DESC')->get();
-
+        $info  = json_decode(System::find(2)['data'],true);
         return view('Home.index.home',[
-            'data' => $data
+            'data' => $data,
+            'loop' => explode(',',$info['images']),
+            'img'  => $info['thumb']
         ]); //首页
     }
 
@@ -80,6 +82,7 @@ class IndexController extends Controller
 
         }
 
+        return true;
     }
 
     public function sum_cart(Request $request){
@@ -297,16 +300,18 @@ class IndexController extends Controller
 
     public function product($id){
         //商品详细信息列表页面
-        $Product = Product::where('id',$id)->first();
+        $product = Product::where('id',$id)->first();
 
         /*
          * 单独提取出图片作为轮播图
          * */
+        $images = explode(',',$product['images']);
 
 
 
         return view('Home.index.product',[
-            'data' => $Product
+            'data' => $product,
+            'img'  => $images
         ]);
     }
 

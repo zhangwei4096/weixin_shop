@@ -331,7 +331,7 @@
     <meta name="viewport"
           content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
     <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
-    <title>手袋购物网</title>
+    <title>恒昀达商贸</title>
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('home/new/css/aui.css') }}"/>
     <link rel="stylesheet" href="{{ URL::asset('home/new/css/aui-flex.css') }}">
     <link rel="stylesheet" href="{{ URL::asset('home/new/css/aui-slide.css') }}">
@@ -372,7 +372,7 @@
     <a class="aui-pull-left aui-btn">
         <!-- <span class="aui-iconfont aui-icon-camera"></span> -->
     </a>
-    <div class="aui-title" style="left:2rem; right: 2rem;">
+    {{--<div class="aui-title" style="left:2rem; right: 2rem;">
         <div class="aui-searchbar" id="search">
             <div class="aui-searchbar-input aui-border-radius">
                 <i class="aui-iconfont aui-icon-search"></i>
@@ -383,24 +383,25 @@
             </div>
             <div class="aui-searchbar-btn" tapmode>取消</div>
         </div>
-    </div>
+    </div>--}}
+    <div class="aui-title">重庆恒昀达商贸</div>
     <a class="aui-pull-right aui-btn">
         <span class="aui-iconfont aui-icon-comment"></span>
     </a>
 </header>
-<!-- 轮播图 -->
+
 <div>
-    <img src="http://shop.veimx.com//ueditor/php/upload/image/20180811/1533990494340649.jpg"  style="width: 100%;height: 188px;" alt="">
+    <img src="{{ $img }}" alt="">
 </div>
 
+<!-- 轮播图 -->
 <div id="aui-slide">
     <div class="aui-slide-wrap">
+        @foreach($loop as $v)
         <div class="aui-slide-node bg-dark">
-            <img src="/ueditor/php/upload/image/20180811/1533992065275865.jpg"/>
+            <img src="{{ $v }}"/>
         </div>
-        <div class="aui-slide-node bg-dark">
-            <img src="/ueditor/php/upload/image/20180811/1533992065661364.jpg"/>
-        </div>
+        @endforeach
     </div>
     <div class="aui-slide-page-wrap"><!--分页容器--></div>
 </div>
