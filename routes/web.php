@@ -128,6 +128,7 @@ Route::group(['namespace'=>'Home','middleware'=>['home.login']],function(){
 
     //我的订单中心操作
     Route::get('/my/orders','OrderController@index');  //订单中心首页
+    Route::post('/my/orders/del','OrderController@order_del'); //用户自行操作订单删除
     Route::get('/my/orders/{id}','OrderController@more'); //订单详细页面
 
     //我的个人中心

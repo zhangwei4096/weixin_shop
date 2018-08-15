@@ -29,6 +29,26 @@ class OrderController extends Controller
         ]);
     }
 
+
+
+    public function order_del(Request $request){
+            //用户自行操作订单删除
+        $id = $request->post('id');
+
+        if (Order::destroy($id)){
+            return [
+                'msg'  => 'success',
+                'data' => ''
+            ];
+        }else{
+            return [
+                'msg'  => 'error',
+                'data' => '删除失败'
+            ];
+        }
+
+    }
+
     public function more($id){
         //订单详细页面
         $order  = Order::find($id);

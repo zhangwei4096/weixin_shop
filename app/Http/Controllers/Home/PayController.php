@@ -63,13 +63,13 @@ class PayController extends Controller
 
         //②、统一下单
         $input = new \WxPayUnifiedOrder();
-        $input->SetBody("test");
-        $input->SetAttach("test");
+        $input->SetBody("商品购买");
+        $input->SetAttach("商品购买");
         $input->SetOut_trade_no($order);
-        $input->SetTotal_fee("1");
+        $input->SetTotal_fee($pay->order_price*100); //金额
         $input->SetTime_start(date("YmdHis"));
         $input->SetTime_expire(date("YmdHis", time() + 5800));
-        $input->SetGoods_tag("test");
+        $input->SetGoods_tag("商品购买");
         $input->SetNotify_url("http://shop.veimx.com/wx/notify");
         $input->SetTrade_type("JSAPI");
         $input->SetOpenid($openId);
@@ -142,7 +142,7 @@ class PayController extends Controller
                 if ($this->is_weixin()) {
                     return view('Home.pay.pay');
                 } else {
-                    return $this->alipay($order_id, '购买商品:' . $order_info['order_price'] . '元', $order_info['order_price']*100, '在线支付');
+                    return $this->alipay($order_id, '购买商品:' . $order_info['order_price'] . '元', $order_info['order_price'], '在线支付');
                 }
 
                 break;
