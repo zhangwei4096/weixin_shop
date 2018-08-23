@@ -114,7 +114,7 @@
                         <p>
                             商品:@foreach(json_decode($v->order_info,true) as $k) {{ $k['title'].' X '.$k['num'].'，' }} @endforeach</p>
                         <p><span>价格：{{ $v->order_price }} 元</span></p>
-                        <p>状态：<span style="color: yellow"> 待发货 </span></p>
+                        <p>状态：<span style="color: #ffcc1d"> 待发货 </span></p>
                     </a>
                 </li>
             @endforeach

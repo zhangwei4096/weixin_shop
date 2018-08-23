@@ -44,6 +44,7 @@ class IndexController extends Controller
         return view('Home.index.home',[
             'data' => $data,
             'loop' => explode(',',$info['images']),
+            'link' => explode(',',$info['links']),
             'img'  => $info['thumb']
         ]); //首页
     }

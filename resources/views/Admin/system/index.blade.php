@@ -264,7 +264,8 @@
         function homes() {
             //首页基本设置
             var images = my_array_name('images');
-            var thumb = $('input[name=thumb]').val();
+            var thumb  = $('input[name=thumb]').val();
+            var links  = select_array_name('links');
             if (images == null || images == "") {
                 layer.msg('轮播图不能为空');
                 return false;
@@ -274,8 +275,8 @@
                 return false;
             }
 
-            $.post('{{url('admin/sys/save/2')}}', {_token: _token, images: images, thumb: thumb}, function (result) {
 
+            $.post('{{url('admin/sys/save/2')}}', {_token: _token, images: images, thumb: thumb,links:links}, function (result) {
                 if (result.msg == 'success') {
                     layer.msg(result.data);
                     //location.reload();
@@ -284,9 +285,15 @@
         }
 
         function deletes(btn) {
+            var num = document.getElementsByName('images[]').length;
+            if (num-1>0){
+                btn.parentNode.remove();
+            }else{
+                layer.msg('广告图必须得留一个',{icon:5,time:2000});
+            }
             //btn.parentElement.parentElement.remove();
-            btn.remove();
-            //console.log(btn.src);
+            //btn.parentNode.remove();
+            //console.log();
         }
 
         function my_array_name(m) {
@@ -298,6 +305,14 @@
             return priv;
         }
 
+        function select_array_name(m) {
+            var valArr = new Array;
+            $("select[name='" + m + "[]']").each(function (i) {
+                valArr[i] = $(this).val();
+            });
+            var links = valArr.join(',');
+            return links;
+        }
 
         function alipay() {
             //保存支付宝的配置
@@ -353,18 +368,58 @@
         }
 
         function getHome() {
+
             $.post('{{url('admin/sys/get/2')}}', {_token: _token}, function (result) {
+
+                //var data2 = eval('(' + result.info + ')');
                 if (result) {
-                    var data = eval('(' + result + ')');  //吧JSON字符串转换为JSON对象
-                    var str = data.images;
-                    var img = str.split(',');
-                    var html = '';
-                    for (var i = 0; i < img.length; i++) {
-                        html += "<p onclick='deletes(this);'  style='display:inline-block;margin-right: 5px;'><img  class='layui-upload-img' width='100' height='100' src='" + img[i] + "'><input type='hidden' name='images[]' value='" + img[i] + "'></p>";
+
+                    $('#demo2').empty();  ///先清空 修复BUG问题
+
+                    var data1 = eval('(' + result.data + ')');  //吧JSON字符串转换为JSON对象
+                    //var data2 = eval('(' + result.info + ')');
+                    var str  = data1.images;
+                    var str1 = data1.links;
+                    var img  = str.split(',');
+                    if (typeof str1!='undefined'){
+                        var link = str1.split(',');
                     }
+
+                    var html = '';
+                    var option = new Array;
+
+
+                    for (var i = 0; i < img.length; i++) {
+                        html += "<p  style='float: left;height: 180px;width:100px;margin-right: 5px;cursor: pointer;'>" +
+                            "<img onclick='deletes(this);'  class='layui-upload-img' width='100' height='100' src='" + img[i] + "'>" +
+                            "<input type='hidden' name='images[]' value='" + img[i] + "'>" +
+                            "<select name='links[]'  style='margin-top: 10px;width: 100px;'></select>" +
+                            "</p>";
+                    }
+
+                    //为元素动态添加下拉菜单
+                    for (var j=0;j<link.length;j++){
+                        for(var i=0;i<result.info.length;i++){
+                            if (result.info[i].id == link[j]){
+                                option[j]+="<option selected value="+result.info[i].id+">"+result.info[i].title+"</option>"
+                            }
+                            option[j]+="<option value="+result.info[i].id+">"+result.info[i].title+"</option>"
+
+                        }
+                    }
+
                     $('#demo2').append(html);
-                    document.getElementsByName('thumb')[0].value = data.thumb;
-                    document.getElementById('demo1').src = data.thumb;
+                    document.getElementsByName('thumb')[0].value = data1.thumb;
+                    document.getElementById('demo1').src = data1.thumb;
+
+                    var ps = document.getElementsByTagName('select');
+                    for (var i=0;i<ps.length;i++){
+                        ps[i].innerHTML=option[i];
+                    }
+
+                    //console.log(option);
+
+
                 }
             });
         }
@@ -424,8 +479,24 @@
                 }
                 , done: function (res) {
                     //上传完毕
+                    $.post('{{url('admin/sys/get/2')}}', {_token: _token}, function (result) {
 
-                    $('#demo2').append("<p onclick='deletes(this);'  style='display:inline-block;margin-right: 5px;'><img  class='layui-upload-img' width='100' height='100' src='" + res.url + "'><input type='hidden' name='images[]' value='" + res.url + "'></p>");
+                        if (result){
+                            var options ='';
+                            for(var i=0;i<result.info.length;i++){
+                                options+="<option value="+result.info[i].id+">"+result.info[i].title+"</option>"
+                            }
+
+                            $('#demo2').append("<p  style='float: left;height: 180px;width:100px;margin-right: 5px;cursor: pointer;'>" +
+                                "<img onclick='deletes(this);'  class='layui-upload-img' width='100' height='100' src='" +res.url+ "'>" +
+                                "<input type='hidden' name='images[]' value='" +res.url+ "'>" +
+                                "<select name='links[]'  style='margin-top: 10px;width: 100px;'>"+options+"</select>" +
+                                "</p>");
+                        }
+
+                    });
+
+
 
                 }
             });

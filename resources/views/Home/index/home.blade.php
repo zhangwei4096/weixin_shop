@@ -395,13 +395,19 @@
 </div>
 
 <!-- 轮播图 -->
-<div id="aui-slide">
+<div id="aui-slide" style="position:relative;">
     <div class="aui-slide-wrap">
-        @foreach($loop as $v)
+        @foreach($loop as $k=>$v)
         <div class="aui-slide-node bg-dark">
-            <img src="{{ $v }}"/>
+
+            <a href="{{ url('/product') }}/{{ $link[$k] }}">
+                <img src="{{ $v }}"/>
+            </a>
         </div>
         @endforeach
+    </div>
+    <div style="height:185px;position:absolute; top: 0;left: 0;">
+        <p style="border: 2px solid #ccc703;border-radius:8px;color: #ff1b01;font-size: 24px;writing-mode: vertical-lr;margin: 15px 15px;line-height: 20px;">精&nbsp;品&nbsp;推&nbsp;荐</p>
     </div>
     <div class="aui-slide-page-wrap"><!--分页容器--></div>
 </div>

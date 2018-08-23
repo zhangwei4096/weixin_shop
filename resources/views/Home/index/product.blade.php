@@ -128,8 +128,21 @@
     </div>
     {{--<div class="aui-bar-tab-item aui-bg-danger aui-text-white" tapmode style="width: auto;">立即购买</div>--}}
 </footer>
-
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script charset="utf-8">
+
+    wx.onMenuShareAppMessage({
+        title: '{{ $data->title }}', // 分享标题
+        desc: '我分享了个商品给你', // 分享描述
+        link: '{{ url('/product') }}', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+        imgUrl: '{{ $data->thumb }}', // 分享图标
+        type: '不填默认为link', // 分享类型,music、video或link，不填默认为link
+        dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+        success: function () {
+// 用户点击了分享后执行的回调函数
+        }
+    });
+
     function toCart(id) {
         //加入购物车
         //var num = parseInt(document.getElementById('number'+id).value);
